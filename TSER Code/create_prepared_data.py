@@ -1,0 +1,154 @@
+
+import pandas as pd
+import numpy as np
+from tsfeatures import tsfeatures
+import threading
+import time
+
+from utils.data_loader import load_from_tsfile_to_dataframe
+from utils.regressor_tools import process_data
+from utils.compression_algos import apply_compression 
+
+
+
+# Function that returns ready to use df of ts_and_features and features
+# adds y as "target" into df 
+# If compression_type is None, no compression is applied. Possible compression types: 'dwt', 'dct', 'dft'
+
+def load_and_prepare_everything(data_path: str, compression_type: str=None, dropout_ratio: float = 0):
+    
+    data_x, data_y = load_from_tsfile_to_dataframe(data_path, replace_missing_vals_with='NaN')
+
+
+    # Return length of shortest ts. In our datasets all ts have same length! -> Keep for safety! They say some dimensions have unequal length!
+    min_len = np.inf
+    for i in range(len(data_x)):
+        x = data_x.iloc[i, :]
+        all_len = [len(y) for y in x]
+        min_len = min(min(all_len), min_len)
+
+
+    # Returns cuboid with each layer one time series, in each column is a ts of the belonging dimension. The exact timestemps are not given(since not really important!)
+    # normalise = 'standard','minmax',None
+    data_x_p = process_data(data_x, normalise='standard', min_len=min_len)
+
+    #Apply compression if needed
+    if compression_type != None:
+        data_x_p = apply_compression(data_x_p, compression_type, dropout_ratio)
+
+    
+    # Swap the dimensions so that columns are stacked after each other. Copy since swapaxes only returns a view
+    #(95, 144, 24) -> (95, 24, 144), first column gets first row etc. One Row is the ts of the belonging dimension.
+    data_swapped = data_x_p.swapaxes(1, 2).copy()
+
+    # Reshape to flattened ts. Stack the rows behind the other for each slice.
+    data_x_flattend = data_swapped.reshape(data_swapped.shape[0], -1)
+
+
+    prep_data = pd.DataFrame(data_x_flattend)
+    prep_data['target'] = data_y
+    prep_data.columns = prep_data.columns.astype(str) #fwiz or flaml needs string as columns!
+
+
+    #data_x_p = data_x_p[0:2,...]
+
+    num_datapoints = data_x_p.shape[0]
+    len_timeseries = data_x_p.shape[1]
+    num_dimensions = data_x_p.shape[2]
+
+    # 38 since tsfeatures returns 38 features
+    num_features = 38
+
+    all_features = np.ndarray((num_datapoints, num_features * num_dimensions))
+
+    for i in range(0, num_datapoints):
+        start_index = 0
+
+        for j in range(0, num_dimensions):
+            curr_ts = data_x_p[i,:,j]
+
+            # Apply tsfeatures
+            #print(curr_ts.size)
+            timeseries_df = pd.DataFrame({'unique_id' : np.ones(len_timeseries),'ds': np.arange(0,len_timeseries) , 'y': curr_ts})
+            
+            feature_array = tsfeatures(timeseries_df, freq=1).fillna(0).values
+
+            #print(feature_array.size)
+            #print(np.isnan(feature_array).sum())
+
+            end_index = start_index + feature_array.size
+            all_features[i, start_index: end_index] = feature_array
+            start_index = end_index
+        
+
+    all_features = pd.DataFrame(all_features)
+
+    # name the features, important for fwiz and flaml
+    for i, col in enumerate(all_features.columns):
+        # Generate the new column name
+        new_col_name = 'f' + str(i + 1)
+        # Rename the column
+        all_features.rename(columns={col: new_col_name}, inplace=True)
+
+
+    all_features['target'] = data_y
+
+    ts_and_features = pd.concat([prep_data.drop(columns=['target']), all_features], axis=1)
+
+
+    return ts_and_features, all_features
+
+
+def main():
+    # Don't overwrite stuff! Comment what is not needed!
+
+    data_train_path = "/home/sim/Desktop/TS Extrinsic Regression/data/AppliancesEnergy_TRAIN.ts"
+    data_test_path = "/home/sim/Desktop/TS Extrinsic Regression/data/AppliancesEnergy_TEST.ts"
+    #data_train_path = "/home/sim/Desktop/TS Extrinsic Regression/data/BeijingPM25Quality_TRAIN.ts"
+    #data_test_path = "/home/sim/Desktop/TS Extrinsic Regression/data/BeijingPM25Quality_TEST.ts"
+    #data_train_path = "/home/sim/Desktop/TS Extrinsic Regression/data/IEEEPPG_TRAIN.ts"
+    #data_test_path = "/home/sim/Desktop/TS Extrinsic Regression/data/IEEEPPG_TEST.ts"
+
+    train_data, train_features = load_and_prepare_everything(data_train_path)
+    test_data, test_features = load_and_prepare_everything(data_test_path)
+
+    # Save data for later, and load it
+    #train_data.to_csv('/home/sim/Desktop/TS Extrinsic Regression/data/prepared_data/AppliancesEnergy_TRAIN_ts_and_features.csv', index=False)
+    #train_features.to_csv('/home/sim/Desktop/TS Extrinsic Regression/data/prepared_data/AppliancesEnergy_TRAIN_features.csv', index=False)
+    #test_data.to_csv('/home/sim/Desktop/TS Extrinsic Regression/data/prepared_data/AppliancesEnergy_TEST_ts_and_features.csv', index=False)
+    #test_features.to_csv('/home/sim/Desktop/TS Extrinsic Regression/data/prepared_data/AppliancesEnergy_TEST_features.csv', index=False)   
+
+    #train_data.to_csv('/home/sim/Desktop/TS Extrinsic Regression/data/prepared_data/BeijingPM25Quality_TRAIN_ts_and_features.csv',index=False)
+    #train_features.to_csv('/home/sim/Desktop/TS Extrinsic Regression/data/prepared_data/BeijingPM25Quality_TRAIN_features.csv', index=False)
+    #test_data.to_csv('/home/sim/Desktop/TS Extrinsic Regression/data/prepared_data/BeijingPM25Quality_TEST_ts_and_features.csv',index=False)
+    #test_features.to_csv('/home/sim/Desktop/TS Extrinsic Regression/data/prepared_data/BeijingPM25Quality_TEST_features.csv',index=False)   
+
+
+    #train_data.to_csv('/home/sim/Desktop/TS Extrinsic Regression/data/prepared_data/IEEEPPG_TRAIN_ts_and_features.csv', index=False)
+    #train_features.to_csv('/home/sim/Desktop/TS Extrinsic Regression/data/prepared_data/IEEEPPG_TRAIN_features.csv', index=False)
+    #test_data.to_csv('/home/sim/Desktop/TS Extrinsic Regression/data/prepared_data/IEEEPPG_TEST_ts_and_features.csv', index=False)
+    #test_features.to_csv('/home/sim/Desktop/TS Extrinsic Regression/data/prepared_data/IEEEPPG_TEST_features.csv', index=False)  
+
+
+    print("successfull loading")
+
+
+def print_progress():
+    while True:
+        current_time = time.localtime()
+        formatted_time = time.strftime("%H:%M:%S %p", current_time)
+        print("Program is still running...")
+        print("Current Time =", formatted_time)
+        time.sleep(5)
+
+
+if __name__ == "__main__":
+    print("Starting program...")
+    # Create a thread for printing progress
+    progress_thread = threading.Thread(target=print_progress)
+    progress_thread.daemon = True  # Daemonize the thread so it exits when the main program finishes
+    progress_thread.start()
+
+    main()
+    print("Program finished.")
+
