@@ -59,6 +59,12 @@ def dct_compress(signal, dropout_ratio):
     return compressed_signal
 
 
+
+
+
+
+
+
 # DFT with thresholding to simply handle hermetian symmetry problem.
 # This results in effect, that sometimes compression i a little weaker than the dropout_ratio demands.
 # Thresholding introducs small probability of cutting other coeff pairs, if by chance 2 frequencies have exactly the same amplitude.
@@ -85,6 +91,10 @@ def dft_compress(signal, dropout_ratio):
     compressed_signal = np.fft.ifft(dft_coeffs, norm= norm)
 
     return compressed_signal.real  # Return only the real part
+
+
+#-> Chance to zero out one coefficient less than on dct, dwt -> to contain hermetion symmetry
+#-> Unlikely case of 2 frequencies with same amplitude, and threshold index is between them none aret -> how high probability?
 
 
 

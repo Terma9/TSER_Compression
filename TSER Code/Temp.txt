@@ -1,0 +1,88 @@
+Ideas:
+- Maybe with modulo and division and certain length of loop easier! Calculate with that end_block!
+
+- change do_compression that no decompressions
+- create extra decompression modules
+- (extract just loading function from load and prepare) -> for load compressfromfile wrapper
+- use it in load and prepare and in wrapper
+
+- for compress and decompress keep file part and then just delete the file afterwards
+
+Decision:
+- no classes, Dictionarey with Dictionarys!
+- id_string for compress, not loading directly from source code
+-> for prepare data
+- wrapper function for lodading directly from dataset!
+
+
+
+Pseudocode:
+- first only from array! later can add other stuff!
+
+- load data ( easy!)
+- dataset(dp,len,dim)
+
+- what I need to know for each dataset: 
+blocksize compression, num_dim for tofile and back, len_ts for decompression
+
+
+
+
+compress(path, compression_type, compress_strength,  name_to_save compressed)
+- flatten all dimensions, put one matrix under the other (len_allts, dim)
+- flattend_dim
+- block_size = block_size_dataset
+
+- if len_allts % block_size < block_size/2:
+	large_last_block = True
+
+- for i in range(num_dim):
+	
+	end_loop = False
+	start_idx = 0
+	end_idx = block_size
+	
+	while(!end_loop):
+	
+		# check if lastblock, adapt end_idx
+		if large_last_block and (end_idx + 2*block_size > len_allts) (double_check edges):
+			end_idx = len_allts -1 
+			end_loop = True
+			
+		# check if last round for end loop and define end for last small block
+		if end_idx >= len_allts:
+			end_idx = len_allts
+			end_loop = True
+		
+		flattened_dim = do_compression(flattend_dim[start_idx:end_idx, i], comp_type, params)
+		
+		start_idx = end_idx
+		end_idx += block_size
+	
+- flattened_dim is transformed now
+- save with np.save
+
+- save with to file: flatten rows after antother, then to file
+	
+
+Decompression:
+decompress_file(file path, type, optionally name to save to, id_string)
+- load with fromfile or np.load
+- bring to flattened_dim with num_dim if fromFile
+
+- decompressed_dataset = np.zeros(calculate ,len_ts,num_dim)
+
+- for i in range(num_dim):
+	# transform back and put in right order
+	
+	for j in range(num_datapoints or len_allts / len_ts)
+	start_idx = 0
+	end_idx = len_ts
+	
+	decompressed_dataset[j,:,i] = do_decompression(flattened_dim[start_idx:end_idx,i], type, comp_strength)
+	
+- thats it!
+	
+
+	
+	
