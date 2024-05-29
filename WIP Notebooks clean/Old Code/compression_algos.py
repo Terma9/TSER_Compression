@@ -6,25 +6,28 @@ import pywt
 
 
 
-def apply_compression(signal, compression_type, comp_param, andDecompress:bool):
+def apply_compression(data_x_p, compression_type, dropout_ratio):
     # Apply compression to the data
 
-
     if compression_type == 'dwt':
-        return dwt_compress(signal, comp_param, andDecompress)
+        for i in range(data_x_p.shape[0]):
+            for j in range(data_x_p.shape[2]):
+                data_x_p[i,:,j] = dwt_compress(data_x_p[i,:,j], dropout_ratio)
 
     elif compression_type == 'dct':
-         return dct_compress(signal, comp_param, andDecompress)
-
+        for i in range(data_x_p.shape[0]):
+            for j in range(data_x_p.shape[2]):
+                data_x_p[i,:,j] = dct_compress(data_x_p[i,:,j], dropout_ratio)
+        
     elif compression_type == 'dft':
-        return dft_compress(signal, comp_param, andDecompress)
-            
-
-
+        for i in range(data_x_p.shape[0]):
+            for j in range(data_x_p.shape[2]):
+                data_x_p[i,:,j] = dft_compress(data_x_p[i,:,j], dropout_ratio)
+        
     else:
         raise ValueError("Invalid compression type. Must be one of 'dwt', 'dct', or 'dft'.")
 
-
+    return data_x_p
 
 
 # Compression Methods:
@@ -36,25 +39,24 @@ def apply_compression(signal, compression_type, comp_param, andDecompress:bool):
 # Checked roughly values after compression are approximations of the original signal
 
 
-def dct_compress(signal, dropout_ratio, andDecompress:bool):
+def dct_compress(signal, dropout_ratio):
     # Apply DCT to the signal
-    dct_coeffs = dct(signal, type=2, norm=None)
+    signal_transformed = dct(signal, type=2, norm=None)
 
     # Calculate the number of coefficients to zero out
-    num_coeffs = int((dropout_ratio) * len(dct_coeffs))
+    num_coeffs = int((dropout_ratio) * len(signal_transformed))
     
-    # Sort the coefficients by magnitude and cut off the smallest ones
-    sorted_indices = np.argsort(np.abs(dct_coeffs))
+    # Sort the coefficients by magnitude and cut of the smallest ones
+    sorted_indices = np.argsort(np.abs(signal_transformed))
     indices_to_zero = sorted_indices[:num_coeffs]
 
     # Zero out selected coefficients
-    dct_coeffs[indices_to_zero] = 0
+    signal_transformed[indices_to_zero] = 0
 
-    if andDecompress == False:
-        return dct_coeffs
-    else:
-        decompressed_signal = idct(dct_coeffs, type=2, norm=None)
-        return decompressed_signal
+    # Reconstruct the signal using inverse DCT
+    compressed_signal = idct(signal_transformed, type=2, norm=None)
+
+    return compressed_signal
 
 
 
@@ -66,7 +68,7 @@ def dct_compress(signal, dropout_ratio, andDecompress:bool):
 # DFT with thresholding to simply handle hermetian symmetry problem.
 # This results in effect, that sometimes compression i a little weaker than the dropout_ratio demands.
 # Thresholding introducs small probability of cutting other coeff pairs, if by chance 2 frequencies have exactly the same amplitude.
-def dft_compress(signal, dropout_ratio, andDecompress:bool):
+def dft_compress(signal, dropout_ratio):
 
     norm = "ortho"
     # Ensure valid dropout_ratio, with threshold and my implementation dropout of 1 doesn't work
@@ -85,14 +87,13 @@ def dft_compress(signal, dropout_ratio, andDecompress:bool):
     
     dft_coeffs[np.abs(dft_coeffs) < threshold] = 0
 
-    if andDecompress == False:
-        return dft_coeffs
-    else:
-        decompressed_signal = np.fft.ifft(dft_coeffs, norm= norm)
-        return decompressed_signal.real # Return only the real part
+    # Reconstruct the signal using inverse DFT
+    compressed_signal = np.fft.ifft(dft_coeffs, norm= norm)
+
+    return compressed_signal.real  # Return only the real part
 
 
-#-> Chance to zero out one coefficient less than on dct, dwt -> to contain hermetian symmetry
+#-> Chance to zero out one coefficient less than on dct, dwt -> to contain hermetion symmetry
 #-> Unlikely case of 2 frequencies with same amplitude, and threshold index is between them none aret -> how high probability?
 
 
@@ -103,22 +104,18 @@ def dft_compress(signal, dropout_ratio, andDecompress:bool):
 # compress both, detail and approximation coefficients
 # global and hard-cut thresholding
 
-# -> couls use pywt coeff functions for less code!
-def dwt_compress(signal, dropout_ratio, andDecompress:bool):
+
+def dwt_compress(signal, dropout_ratio):
     """
     Args:
         signal: The input signal (1D numpy array).
         dropout_ratio: The ratio of coefficients to be zeroed out.
         
     Returns:
-        Decompressed signal (1D numpy array).
+        Compressed signal (1D numpy array).
     """
     # My parameters
     wavelet = 'db4'
-
-    # Add manual max level depending on wavelet! + Also add max_level if hardcoded level is too high!
-
-
     max_level = pywt.dwt_max_level(len(signal), wavelet) 
     
     
@@ -142,25 +139,21 @@ def dwt_compress(signal, dropout_ratio, andDecompress:bool):
    
     # Zero out selected coefficients
     concat_coeffs[zero_indices] = 0
-
-    if andDecompress == False:
-        return concat_coeffs
-    
-    else:
-        # Reconstruct individual detail coefficients -> for only detail coeff change range(1, len(coeffs))
-        start_idx = 0
-        for i in range(0, len(coeffs)):
-            # Length of current coefficient
-            coeff_len = len(coeffs[i])
-            # End index of current coefficient
-            end_idx = start_idx + coeff_len
-            # Assign values to the coefficient
-            coeffs[i] = concat_coeffs[start_idx:end_idx]
-            # Update start index for next coefficient
-            start_idx = end_idx
-            
-        # Reconstruct the signal
-        compressed_signal = pywt.waverec(coeffs, wavelet)
+   
+    # Reconstruct individual detail coefficients -> for only detail coeff change range(1, len(coeffs))
+    start_idx = 0
+    for i in range(0, len(coeffs)):
+        # Length of current coefficient
+        coeff_len = len(coeffs[i])
+        # End index of current coefficient
+        end_idx = start_idx + coeff_len
+        # Assign values to the coefficient
+        coeffs[i] = concat_coeffs[start_idx:end_idx]
+        # Update start index for next coefficient
+        start_idx = end_idx
+        
+    # Reconstruct the signal
+    compressed_signal = pywt.waverec(coeffs, wavelet)
 
 
-        return compressed_signal
+    return compressed_signal

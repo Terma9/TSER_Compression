@@ -33,6 +33,13 @@ def load_datapoint(data_path, datapoint = 0, norm = None):
     return(data_x_p[datapoint,:,:])
 
 
+def 
+
+
+
+
+
+
 def compute_rmse(array1, array2):
     """
     Compute the Root Mean Squared Error (RMSE) between two arrays.

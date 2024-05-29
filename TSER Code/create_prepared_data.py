@@ -7,15 +7,16 @@ import time
 
 from utils.data_loader import load_from_tsfile_to_dataframe
 from utils.regressor_tools import process_data
-from utils.compression_algos import apply_compression 
 
+from compression import compress_dataset
 
+import os # for extracting dataset_id 
 
 # Function that returns ready to use df of ts_and_features and features
 # adds y as "target" into df 
 # If compression_type is None, no compression is applied. Possible compression types: 'dwt', 'dct', 'dft'
 
-def load_and_prepare_everything(data_path: str, compression_type: str=None, dropout_ratio: float = 0):
+def load_and_prepare_everything(data_path: str, compression_type: str=None, compression_param: float = 0):
     
     data_x, data_y = load_from_tsfile_to_dataframe(data_path, replace_missing_vals_with='NaN')
 
@@ -32,9 +33,14 @@ def load_and_prepare_everything(data_path: str, compression_type: str=None, drop
     # normalise = 'standard','minmax',None
     data_x_p = process_data(data_x, normalise='standard', min_len=min_len)
 
-    #Apply compression if needed
+
+    # Extract the dataset_id from the path -> ID is the name of the dataset without _TRAIN.ts or _TEST.ts.
+    dataset_id = os.path.basename(data_path).split('_')[0]
+
+
+    #Apply compression and decompression for approximated values.
     if compression_type != None:
-        data_x_p = apply_compression(data_x_p, compression_type, dropout_ratio)
+        data_x_p = compress_dataset(data_x_p, dataset_id, andDecompress=True, compression_type=compression_type, compression_param=compression_param)
 
     
     # Swap the dimensions so that columns are stacked after each other. Copy since swapaxes only returns a view
