@@ -16,7 +16,7 @@ import os # for extracting dataset_id
 # adds y as "target" into df 
 # If compression_type is None, no compression is applied. Possible compression types: 'dwt', 'dct', 'dft'
 
-def load_and_prepare_everything(data_path: str, compression_type: str=None, compression_param: float = 0):
+def load_and_prepare_everything(data_path: str, compression_type: str, compression_param: float):
     
     data_x, data_y = load_from_tsfile_to_dataframe(data_path, replace_missing_vals_with='NaN')
 

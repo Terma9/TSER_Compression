@@ -3,38 +3,27 @@ import gzip
 
 from utils.compression_algos import *
 
-# define global dictionary
+# define global dictionary -> these three are enough for testing -> decide for other datasets later to have sth. nice to write about them!
 dataset_params = {
-    'AppliancesEnergy': {'block_size': 1008, 'num_dim': 3, 'len_ts': 100},
-    'BeijingPM25Quality': {'block_size': 15, 'num_dim': 4, 'len_ts': 120},
+    'AppliancesEnergy':        {'block_size': 1008, 'num_dim': 24, 'len_ts': 144},
+    'BeijingPM25Quality':      {'block_size': 1008, 'num_dim': 9, 'len_ts': 24},
+    'IEEEPPG':                 {'block_size': 1000, 'num_dim': 5, 'len_ts': 1000},
     # Add more datasets as needed
 }
-
-
-# To compress to file or from file, add destination or source path to the function call.
-
-
-
-
-
 
 # Compression of dataset-array applied on blocks around size 1000.(Exact size depends on dataset to not cut time series in parts.)
 # Last block is compressed together with the previous block if it is smaller than block_size/2.
 # Either returns the array with the coefficients of compression(for load_and_prepare_dataset)
 # or returns the array with decompressed values.(For calculating compression size.) Depending on andDecompress.
-# Starts with 
 
-
-
-def compress_dataset(dataset_array, dataset_id, andDecompress:bool, compression_type=None, compression_param=None):
+def compress_dataset(dataset_array, dataset_id, andDecompress:bool, compression_type, compression_param):
 
     # Retrieve dataset parameters
     num_dim = dataset_params[dataset_id]['num_dim']
     len_ts = dataset_params[dataset_id]['len_ts'] 
     block_size = dataset_params[dataset_id]['block_size']
 
-    # Boolean if last transformation is large or small
-    last_transfrom_large = False
+    
 
 
     # Flatten the dataset array, put one matrix under the other: (num_dp, len_ts, dim) -> (len_flat_dim, dim)
@@ -46,11 +35,13 @@ def compress_dataset(dataset_array, dataset_id, andDecompress:bool, compression_
     
     # If the last block is smaller than block_size/2, we will transform it togehter with the previous block.
     # If len_last_block zero, then we don't need to do anything. Last transform fits perfectly.
+    # could simply put this in the first if of the loop -> cleaner code, little bit more calculation 
+    last_transfrom_large = False
     len_last_block = len_flat_dim % block_size
     if  len_last_block != 0 and len_last_block < block_size/2:
         last_transfrom_large = True
 
-    # Create blocks and so transforms for each dimension individually. Since different dimensions have different ts-shapes. The transform would transform worse, if we mix dimensions for transforming.
+    # Create blocks and so transforms for each dimension individually. Since different dimensions have different ts-curves. The transform would transform worse, if we mix dimensions for transforming.
     for i  in range(num_dim):
         end_loop = False
         start_idx = 0
@@ -58,20 +49,20 @@ def compress_dataset(dataset_array, dataset_id, andDecompress:bool, compression_
 
         while not end_loop:
 
-            # If the last block is smaller than block_size/2, we will transform it togehter with the previous block.
-            # end_idx + 1 * block_size is the last index of the block before last block, so again + block_size to get end of last block.
-            # > and not >= because if it is equal, the last block fits perfectly (but can't happen here as we only enter this loop if last block is filled less than half)
-            if last_transfrom_large and (end_idx + 2 * block_size) > len_flat_dim:
+            # We check if we are in the block before the last block. If yes we check if we need to transform the last block together with the previous block.
+            # If both yes we merge together and end loop.
+            if (end_idx + 1 * block_size) > len_flat_dim and last_transfrom_large:
                 end_idx = len_flat_dim
                 end_loop = True
 
-            
-            # If the last block (is bigger than block_size/2) and is bigger than len_flat_dim, we need to adjust the end_idx.
-            # We do >= to end loop, also when it fits perfectly. First assignment is then redundant.
+        
+            # If the last block (is larger than block_size/2, only then can condition be true) and is larger than len_flat_dim, we need to adjust the end_idx. 
+            # We do >= to end loop, also when it fits perfectly. First assignment is then redundant. But is very important to end loop!
             if end_idx >= len_flat_dim:
                 end_idx = len_flat_dim
                 end_loop = True
 
+            #print("end_idx: ", end_idx)
 
             # Compress the block
             array_flatdim[start_idx:end_idx, i] = apply_compression(array_flatdim[start_idx:end_idx, i], compression_type, compression_param, andDecompress)
@@ -103,11 +94,8 @@ def compress_dataset(dataset_array, dataset_id, andDecompress:bool, compression_
             array_totally_flat.tofile(path_to_save)
 
 
-    
 
-
-
-# Maybe add wrapper to load directly from file!
+# Maybe add wrapper to load ddata directly from path!
 
 # Checked internal logic! And one simple test case!
 def calculateCompRatio(dataset_array, array_flatdim_comp):
@@ -131,25 +119,6 @@ def calculateCompRatio(dataset_array, array_flatdim_comp):
 
     # len(bytestring) returns number of bytes in the bytestring! No metadata. No nothing!
     return num_bytes_raw / len(compressed_data_gzipd)
-
-
-
-
-
-   
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

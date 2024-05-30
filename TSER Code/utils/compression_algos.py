@@ -117,15 +117,12 @@ def dwt_compress(signal, dropout_ratio, andDecompress:bool):
     wavelet = 'db4'
 
     # Add manual max level depending on wavelet! + Also add max_level if hardcoded level is too high!
-
-
     max_level = pywt.dwt_max_level(len(signal), wavelet) 
-    
-    
     # guarantees max_level / 2 and then to round up!
     level = (max_level +1 ) // 2
   
-    # Decompose the signal -> coeffs is an list of arrays!
+
+    # Decompose the signal -> coeffs is a list of arrays!
     coeffs = pywt.wavedec(signal, wavelet, level=level)
     
     # Concatenate detail coefficients only -> for only detail coeff change to one

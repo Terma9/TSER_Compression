@@ -33,11 +33,18 @@ def load_datapoint(data_path, datapoint = 0, norm = None):
     return(data_x_p[datapoint,:,:])
 
 
-def 
+# Load Dataset into Array!
+def load_dataset(data_path, norm = "standard"):
+    data_x, data_y = load_from_tsfile_to_dataframe(data_path, replace_missing_vals_with='NaN')
 
+    min_len = np.inf
+    for i in range(len(data_x)):
+        x = data_x.iloc[i, :]
+        all_len = [len(y) for y in x]
+        min_len = min(min(all_len), min_len)
 
-
-
+    data_x_p = process_data(data_x, normalise='standard', min_len=min_len)
+    return(data_x_p)
 
 
 def compute_rmse(array1, array2):
@@ -56,9 +63,6 @@ def compute_rmse(array1, array2):
 
 # Input: Matrices with ts in columns up to down, each column is one dimension
 # Returns mean RMSE of all columns, and RMSE of each column
-
-
-
 def compute_rmse_of_datapoint(matrix1, matrix2):
     rmse_all = 0
     rmse_array = np.zeros(matrix1.shape[1])
@@ -69,3 +73,14 @@ def compute_rmse_of_datapoint(matrix1, matrix2):
         rmse_all += rmse
 
     return rmse_all/matrix1.shape[1], rmse_array
+
+
+
+# Adds all average rmse of all datapoints in the dataset, then returns average of that
+def compute_avg_rmse_of_dataset(dataset_array, dataset_array_comp):
+    # calculate rmse per dp, for all datapoints, add and then divide by number of datapoints
+    rmse_all_dp = 0
+    for i in range(dataset_array.shape[0]):
+        rmse_all_dp += compute_rmse_of_datapoint(dataset_array[i,:,:], dataset_array_comp[i,:,:])[0]
+    
+    return rmse_all_dp/dataset_array.shape[0]
