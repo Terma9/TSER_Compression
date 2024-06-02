@@ -27,7 +27,11 @@ def compress_dataset(dataset_array, dataset_id, andDecompress:bool, compression_
 
 
     # Flatten the dataset array, put one matrix under the other: (num_dp, len_ts, dim) -> (len_flat_dim, dim)
-    array_flatdim = dataset_array.reshape(-1, num_dim)
+    array_flatdim = dataset_array.reshape(-1, num_dim).copy()
+
+    # Adapt return type to complex128 if dft is used. 
+    if compression_type == 'dft':
+       array_flatdim = array_flatdim.astype(np.complex128)
 
     # Length of all the time series in one dimension -> Assumption, all dimensions have the same length
     len_flat_dim = array_flatdim.shape[0]
@@ -71,14 +75,14 @@ def compress_dataset(dataset_array, dataset_id, andDecompress:bool, compression_
             start_idx = end_idx
             end_idx += block_size
 
-        # Depending on andDecompress return the compressed array(coefficients) or the decompressed array(Approximation).
-        if andDecompress == False:
-            # Return array in format (len_flat_dim, dim).
-            return array_flatdim
-        else: 
-            #Bring back from (len_flat_dim, dim) to (num_dp, len_ts, dim). Remember reshape always only returns views!
-            dataset_array_compressed = array_flatdim.reshape(-1,len_ts, num_dim)
-            return dataset_array_compressed
+    # Depending on andDecompress return the compressed array(coefficients) or the decompressed array(Approximation).
+    if andDecompress == False:
+        # Return array in format (len_flat_dim, dim).
+        return array_flatdim
+    else: 
+        #Bring back from (len_flat_dim, dim) to (num_dp, len_ts, dim). Remember reshape always only returns views!
+        dataset_array_compressed = array_flatdim.reshape(-1,len_ts, num_dim)
+        return dataset_array_compressed
 
 
 
@@ -95,21 +99,28 @@ def compress_dataset(dataset_array, dataset_id, andDecompress:bool, compression_
 
 
 
-# Maybe add wrapper to load ddata directly from path!
+# Maybe add wrapper to load data directly from path!
 
-# Checked internal logic! And one simple test case!
+# Tested internal logic! And one simple test case!
+# dataset_array.shape -> (num_dp, len_ts, num_dim), array_flatdim_comp.shape -> (len_flat_dim, num_dim)
 def calculateCompRatio(dataset_array, array_flatdim_comp):
 
-    
+    # Also gzip the raw_data
+    dataset_array_gzipd = gzip.compress(dataset_array.tobytes(), compresslevel=9)
 
-    # Compress with gzip
-    # Save it as dim after dim, to keep ts and blocks together saved.  Not sure if it makes difference, but keeps the idea-logic!
-    array_flatdim_1d = array_flatdim_comp.reshape(-1, order='F')
+    #print("Number of elements of Coeff-Array", array_flatdim_comp.size))
+    #print("Number of Zersos", np.sum(array_flatdim_comp.flatten() == 0)
     
-    # Transform to pyton bytes object. It flattens the array row after row (and slice after slice). (Iflattened already manually.)
-    # Then gives us a byte-string with each element in byte format.(Just the numbers of the array one after another. No metadata.
+    
+    # Compress with gzip
+    # Save it as dim after dim, to keep ts and blocks together saved. 
+    array_flatdim_1d = array_flatdim_comp.reshape(-1, order='F') 
+    
+    # Transform to pyton bytes object. It flattens the array row after row (and slice after slice). (I flattened already manually.)
+    # Then gives us a byte-string with each element in byte format.(Just the numbers of the array one after another. No metadata.)
     compressed_data_bytestring = array_flatdim_1d.tobytes()
 
+    
     # Compress the byte-string with gzip. -> Input is byte string and then returns a byte-string. ->> Test more by yourself!
     compressed_data_gzipd = gzip.compress(compressed_data_bytestring, compresslevel=9)
 
@@ -118,13 +129,33 @@ def calculateCompRatio(dataset_array, array_flatdim_comp):
     num_bytes_raw = dataset_array.nbytes
 
     # len(bytestring) returns number of bytes in the bytestring! No metadata. No nothing!
-    return num_bytes_raw / len(compressed_data_gzipd)
+    return len(dataset_array_gzipd) / len(compressed_data_gzipd)
 
 
 
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ #Not sure if it makes difference, but keeps the idea-logic!
 """ 
 # Decompress from File!
 # Return array now, but adjust later to save to file!

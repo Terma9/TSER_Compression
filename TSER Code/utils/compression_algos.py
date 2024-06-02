@@ -70,8 +70,8 @@ def dft_compress(signal, dropout_ratio, andDecompress:bool):
 
     norm = "ortho"
     # Ensure valid dropout_ratio, with threshold and my implementation dropout of 1 doesn't work
-    if not 0 <= dropout_ratio < 1:
-        raise ValueError("Dropout ratio must be between 0 and 1 (exclusive).")
+    #if not 0 <= dropout_ratio < 1:
+    #    raise ValueError("Dropout ratio must be between 0 and 1 (exclusive).")
 
     # Perform DFT
     dft_coeffs = np.fft.fft(signal, norm= norm)
@@ -79,11 +79,17 @@ def dft_compress(signal, dropout_ratio, andDecompress:bool):
     # Calculate threshold based on sorted magnitudes
     sorted_magnitudes = np.sort(np.abs(dft_coeffs))
     threshold_index = int(len(dft_coeffs) * dropout_ratio)
+
+    # Check if threshold_index is valid, if not return zeroed out coefficients
+    if threshold_index == len(dft_coeffs):
+        return np.zeros_like(dft_coeffs)
+
     threshold = sorted_magnitudes[threshold_index]
 
     # Zero out coefficients below the threshold
     
     dft_coeffs[np.abs(dft_coeffs) < threshold] = 0
+
 
     if andDecompress == False:
         return dft_coeffs
@@ -102,6 +108,7 @@ def dft_compress(signal, dropout_ratio, andDecompress:bool):
 # level = max_level / 2 and then to round up
 # compress both, detail and approximation coefficients
 # global and hard-cut thresholding
+# Signal Extension Mode = Periodic! If not, the len of coefficients is not equal to the len of the signal
 
 # -> couls use pywt coeff functions for less code!
 def dwt_compress(signal, dropout_ratio, andDecompress:bool):
@@ -123,7 +130,7 @@ def dwt_compress(signal, dropout_ratio, andDecompress:bool):
   
 
     # Decompose the signal -> coeffs is a list of arrays!
-    coeffs = pywt.wavedec(signal, wavelet, level=level)
+    coeffs = pywt.wavedec(signal, wavelet, level=level, mode='per')
     
     # Concatenate detail coefficients only -> for only detail coeff change to one
     concat_coeffs = np.concatenate(coeffs[0:])
@@ -144,7 +151,7 @@ def dwt_compress(signal, dropout_ratio, andDecompress:bool):
         return concat_coeffs
     
     else:
-        # Reconstruct individual detail coefficients -> for only detail coeff change range(1, len(coeffs))
+        # Reconstruct individual coefficients -> for only detail coeff change range(1, len(coeffs))
         start_idx = 0
         for i in range(0, len(coeffs)):
             # Length of current coefficient
@@ -157,7 +164,7 @@ def dwt_compress(signal, dropout_ratio, andDecompress:bool):
             start_idx = end_idx
             
         # Reconstruct the signal
-        compressed_signal = pywt.waverec(coeffs, wavelet)
+        compressed_signal = pywt.waverec(coeffs, wavelet, mode='per')
 
 
         return compressed_signal
