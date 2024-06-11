@@ -19,6 +19,8 @@ def apply_compression(signal, compression_type, comp_param, andDecompress:bool):
     elif compression_type == 'dft':
         return dft_compress(signal, comp_param, andDecompress)
             
+    elif compression_type == 'cpt':
+        return cpt_compress(signal, comp_param, andDecompress)
 
 
     else:
@@ -168,3 +170,89 @@ def dwt_compress(signal, dropout_ratio, andDecompress:bool):
 
 
         return compressed_signal
+    
+
+
+
+
+
+
+
+
+from numpy.polynomial.chebyshev import chebfit, chebval
+
+
+# Chebyshev Transoform Compression Code -WIP
+def cpt_compress(signal, dropout_ratio, andDecompress:bool):
+    
+    # Later: Try with fitting into Interval -1,1
+    t = np.arange(0, len(signal))
+
+    # Get the coefficients. deg is the longest that is possible. Shouldn't take too long to calculate.
+    #cpt_coeffs = chebfit(t, signal, deg=int((signal.size-1)))
+    cpt_coeffs = chebfit(t, signal, deg=signal.size-1)
+
+    # Calculate the number of coefficients to zero out
+    num_coeffs = int((dropout_ratio) * len(cpt_coeffs))
+    
+    # Sort the coefficients by value and cut off the smallest ones
+    sorted_indices = np.argsort(np.abs(cpt_coeffs))
+    indices_to_zero = sorted_indices[:num_coeffs]
+
+    # Zero out selected coefficients
+    cpt_coeffs[indices_to_zero] = 0
+
+    if andDecompress == False:
+        return cpt_coeffs
+    else:
+        decompressed_signal = chebval(t, cpt_coeffs)
+        return decompressed_signal
+
+
+
+
+ 
+
+
+""" import numpy as np
+from numpy.polynomial.chebyshev import chebfit, chebval
+
+def min_max_normalize_np(data):
+
+    min_val = np.min(data)
+    max_val = np.max(data)
+    norm_data = (2 * (data - min_val) / (max_val - min_val)) - 1
+    return norm_data
+
+def inverse_min_max_normalize_np(norm_data, min_val, max_val):
+
+    orig_data = ((norm_data + 1) * (max_val - min_val) / 2) + min_val
+    return orig_data
+
+def cpt_compress(signal, dropout_ratio, andDecompress:bool):
+    # Normalize the signal to the range [-1, 1]
+    t = min_max_normalize_np(signal)
+    
+    # Create the time vector for Chebyshev fitting
+    #t = np.linspace(-1, 1, signal_norm.size)
+
+    # Fit Chebyshev polynomial
+    cpt_coeffs = chebfit(t, signal, deg=signal.size-1)
+
+    # Calculate the number of coefficients to zero out
+    num_coeffs = int((dropout_ratio) * len(cpt_coeffs))
+    
+    # Sort the coefficients by value and cut off the smallest ones
+    sorted_indices = np.argsort(np.abs(cpt_coeffs))
+    indices_to_zero = sorted_indices[:num_coeffs]
+
+    # Zero out selected coefficients
+    cpt_coeffs[indices_to_zero] = 0
+
+    if andDecompress == False:
+        return cpt_coeffs
+    else:
+        # Decompress and inverse normalize the signal
+        decompressed_signal_norm = chebval(t, cpt_coeffs)
+        decompressed_signal = inverse_min_max_normalize_np(decompressed_signal_norm, np.min(signal), np.max(signal))
+        return decompressed_signal """

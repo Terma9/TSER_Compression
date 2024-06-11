@@ -86,24 +86,16 @@ def compress_dataset(dataset_array, dataset_id, andDecompress:bool, compression_
 
 
 
-        return array_flatdim
-
-        if path_to_save != None:
-            # Add Default Filename
-            dataset_id + '_compressed.bin'
-            # Flattten on 2d-array puts rows behind each other! -> to reconstruct only need number of columns(=num_dim)
-            array_totally_flat = array_flatdim.flatten()
-
-            # Save to file. (Adjust with npy in case. Then no flattening needed.) Keep in mind. Cant transfer .bin to other machines!
-            array_totally_flat.tofile(path_to_save)
-
-
-
 # Maybe add wrapper to load data directly from path!
 
 # Tested internal logic! And one simple test case!
 # dataset_array.shape -> (num_dp, len_ts, num_dim), array_flatdim_comp.shape -> (len_flat_dim, num_dim)
-def calculateCompRatio(dataset_array, array_flatdim_comp):
+def calculateCompRatio(dataset_array, array_flatdim_comp, withQuantization:bool = False):
+
+    # Quick Test for Quantizaton
+    if withQuantization:
+        array_flatdim_comp = np.round(array_flatdim_comp, 4)
+
 
     # Also gzip the raw_data
     dataset_array_gzipd = gzip.compress(dataset_array.tobytes(), compresslevel=9)

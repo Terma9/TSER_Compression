@@ -12,6 +12,34 @@ from compression import compress_dataset
 
 import os # for extracting dataset_id 
 
+
+
+# Small helper Function for loading data and applying compression.
+# Return the compressed Dataset. Either as flat_dim if noDecompres, or as (num_dp, len_ts, num_dim) if andDecompress=True
+
+def load_and_compress(data_path: str, compression_type: str, compression_param: float, andDecompress: bool):
+
+    data_x, data_y = load_from_tsfile_to_dataframe(data_path, replace_missing_vals_with='NaN')
+
+    min_len = np.inf
+    for i in range(len(data_x)):
+        x = data_x.iloc[i, :]
+        all_len = [len(y) for y in x]
+        min_len = min(min(all_len), min_len)
+
+    data_x_p = process_data(data_x, normalise='standard', min_len=min_len)
+
+    dataset_id = os.path.basename(data_path).split('_')[0]
+
+    
+    return compress_dataset(data_x_p, dataset_id, andDecompress= andDecompress, compression_type=compression_type, compression_param=compression_param)
+    
+
+
+
+
+
+
 # Function that returns ready to use df of ts_and_features and features
 # adds y as "target" into df 
 # If compression_type is None, no compression is applied. Possible compression types: 'dwt', 'dct', 'dft'
