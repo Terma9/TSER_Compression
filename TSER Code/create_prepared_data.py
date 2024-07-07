@@ -19,6 +19,7 @@ import os # for extracting dataset_id
 
 def load_and_compress(data_path: str, compression_type: str, compression_param: float, andDecompress: bool):
 
+    # everyting except last 2 lines is the same as in load_dataset
     data_x, data_y = load_from_tsfile_to_dataframe(data_path, replace_missing_vals_with='NaN')
 
     min_len = np.inf
@@ -133,6 +134,8 @@ def load_and_prepare_everything(data_path: str, compression_type: str, compressi
     return ts_and_features, all_features
 
 
+
+# add Dictionary to easily decide which dataset to use, improve whole code
 def main():
     # Don't overwrite stuff! Comment what is not needed!
 

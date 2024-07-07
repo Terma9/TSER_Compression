@@ -6,21 +6,21 @@ import pywt
 
 
 
-def apply_compression(signal, compression_type, comp_param, andDecompress:bool):
+def apply_compression(signal, compression_type, comp_param, andDecompress:bool, level, wavelet, quantization_level):
     # Apply compression to the data
 
 
     if compression_type == 'dwt':
-        return dwt_compress(signal, comp_param, andDecompress)
+        return dwt_compress(signal, comp_param, andDecompress, level, wavelet, quantization_level)
 
     elif compression_type == 'dct':
-         return dct_compress(signal, comp_param, andDecompress)
+         return dct_compress(signal, comp_param, andDecompress, quantization_level)
 
     elif compression_type == 'dft':
-        return dft_compress(signal, comp_param, andDecompress)
+        return dft_compress(signal, comp_param, andDecompress, quantization_level)
             
     elif compression_type == 'cpt':
-        return cpt_compress(signal, comp_param, andDecompress)
+        return cpt_compress(signal, comp_param, andDecompress, quantization_level)
 
 
     else:
@@ -38,7 +38,7 @@ def apply_compression(signal, compression_type, comp_param, andDecompress:bool):
 # Checked roughly values after compression are approximations of the original signal
 
 
-def dct_compress(signal, dropout_ratio, andDecompress:bool):
+def dct_compress(signal, dropout_ratio, andDecompress:bool, quantization_level):
     # Apply DCT to the signal
     dct_coeffs = dct(signal, type=2, norm=None)
 
@@ -51,6 +51,9 @@ def dct_compress(signal, dropout_ratio, andDecompress:bool):
 
     # Zero out selected coefficients
     dct_coeffs[indices_to_zero] = 0
+
+     # Add quantization. Round to qlevel number of decimal places
+    dct_coeffs = np.round(dct_coeffs, quantization_level)
 
     if andDecompress == False:
         return dct_coeffs
@@ -68,7 +71,7 @@ def dct_compress(signal, dropout_ratio, andDecompress:bool):
 # DFT with thresholding to simply handle hermetian symmetry problem.
 # This results in effect, that sometimes compression i a little weaker than the dropout_ratio demands.
 # Thresholding introducs small probability of cutting other coeff pairs, if by chance 2 frequencies have exactly the same amplitude.
-def dft_compress(signal, dropout_ratio, andDecompress:bool):
+def dft_compress(signal, dropout_ratio, andDecompress:bool, quantization_level):
 
     norm = "ortho"
     # Ensure valid dropout_ratio, with threshold and my implementation dropout of 1 doesn't work
@@ -92,6 +95,9 @@ def dft_compress(signal, dropout_ratio, andDecompress:bool):
     
     dft_coeffs[np.abs(dft_coeffs) < threshold] = 0
 
+     # Add quantization. Round to qlevel number of decimal places
+    dft_coeffs = np.round(dft_coeffs, quantization_level)
+
 
     if andDecompress == False:
         return dft_coeffs
@@ -113,7 +119,8 @@ def dft_compress(signal, dropout_ratio, andDecompress:bool):
 # Signal Extension Mode = Periodic! If not, the len of coefficients is not equal to the len of the signal
 
 # -> couls use pywt coeff functions for less code!
-def dwt_compress(signal, dropout_ratio, andDecompress:bool):
+# extend for level and type for testing! -> remove after decision is made
+def dwt_compress(signal, dropout_ratio, andDecompress:bool, level, wavelet, quantization_level):
     """
     Args:
         signal: The input signal (1D numpy array).
@@ -123,16 +130,24 @@ def dwt_compress(signal, dropout_ratio, andDecompress:bool):
         Decompressed signal (1D numpy array).
     """
     # My parameters
-    wavelet = 'db4'
+    #wavelet = 'db4'
 
     # Add manual max level depending on wavelet! + Also add max_level if hardcoded level is too high!
     max_level = pywt.dwt_max_level(len(signal), wavelet) 
+
+    if(max_level < level):
+        level = max_level
+    
     # guarantees max_level / 2 and then to round up!
-    level = (max_level +1 ) // 2
-  
+    # level = (max_level +1 ) // 2
+    # level = max_level
+
+    
+
 
     # Decompose the signal -> coeffs is a list of arrays!
-    coeffs = pywt.wavedec(signal, wavelet, level=level, mode='per')
+    # Periodization is the right signal, not periodic!
+    coeffs = pywt.wavedec(signal, wavelet, level=level, mode='periodization')
     
     # Concatenate detail coefficients only -> for only detail coeff change to one
     concat_coeffs = np.concatenate(coeffs[0:])
@@ -148,6 +163,12 @@ def dwt_compress(signal, dropout_ratio, andDecompress:bool):
    
     # Zero out selected coefficients
     concat_coeffs[zero_indices] = 0
+
+
+    # Add quantization. Round to qlevel number of decimal places
+    concat_coeffs = np.round(concat_coeffs, quantization_level)
+
+
 
     if andDecompress == False:
         return concat_coeffs
@@ -166,7 +187,7 @@ def dwt_compress(signal, dropout_ratio, andDecompress:bool):
             start_idx = end_idx
             
         # Reconstruct the signal
-        compressed_signal = pywt.waverec(coeffs, wavelet, mode='per')
+        compressed_signal = pywt.waverec(coeffs, wavelet, mode='periodization')
 
 
         return compressed_signal

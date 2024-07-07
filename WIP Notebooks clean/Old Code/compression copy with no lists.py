@@ -8,7 +8,7 @@ dataset_params = {
     'AppliancesEnergy':          {'block_size': 1008, 'num_dim': 24, 'len_ts': 144},
     'BeijingPM25Quality':        {'block_size': 1008, 'num_dim': 9, 'len_ts': 24},
     'IEEEPPG':                   {'block_size': 1000, 'num_dim': 5, 'len_ts': 1000},
-    'FloodModeling1':           {'block_size': 1064, 'num_dim': 1, 'len_ts': 266},
+    'NewsTitleSentiment':        {'block_size': 1008, 'num_dim': 3, 'len_ts': 144},
     'Covid3Month':               {'block_size': 1008, 'num_dim': 1, 'len_ts': 84},
 
 
@@ -17,7 +17,7 @@ dataset_params = {
 
     # Backup Datasets if other ones give bad results.
     'BenzeneConcentration':      {'block_size': 960, 'num_dim': 8, 'len_ts': 240},
-    'NewsTitleSentiment':        {'block_size': 1008, 'num_dim': 3, 'len_ts': 144},
+    'FloodModeling1':           {'block_size': 1064, 'num_dim': 1, 'len_ts': 266},
     'HouseholdPowerConsumption1':{'block_size': 1440, 'num_dim': 5, 'len_ts': 1440},
     
 }
@@ -27,7 +27,7 @@ dataset_params = {
 # Either returns the array with the coefficients of compression(for load_and_prepare_dataset)
 # or returns the array with decompressed values.(For calculating compression size.) Depending on andDecompress.
 
-def compress_dataset(dataset_array, dataset_id, andDecompress:bool, compression_type, compression_param, level, wavelet, quantization_level):
+def compress_dataset(dataset_array, dataset_id, andDecompress:bool, compression_type, compression_param):
 
     # Retrieve dataset parameters
     num_dim = dataset_params[dataset_id]['num_dim']
@@ -50,9 +50,35 @@ def compress_dataset(dataset_array, dataset_id, andDecompress:bool, compression_
     # Length of all the time series in one dimension -> Assumption, all dimensions have the same length
     len_flat_dim = array_flatdim.shape[0]
 
+    # DWT can return slightly longer coefficients!
+    # See if last block is big or not
+    # calculate new size for each block and add!
+    # Or do it with a list and append!
+    
 
-    # Just create an array pointer for later!
-    array_flatdim_coeff = array_flatdim
+    if compression_type == 'dwt':
+        # Also possible with internal wavelet_method, but need to check how it works
+        len_transformed_block = dwt_compress(np.random.rand(block_size), 0.2, False).shape[0]
+
+        num_blocks = len_flat_dim // block_size
+        len_last_block  = len_flat_dim % block_size
+
+        if len_last_block == 0: 
+            len_all_blocks_trans = num_blocks * len_transformed_block
+        
+        elif len_last_block >= block_size/2:
+            len_all_blocks_trans = num_blocks * len_transformed_block + dwt_compress(np.random.rand(len_last_block), 0.2, False).shape[0]
+
+        else: 
+            len_all_blocks_trans = (num_blocks - 1) * len_transformed_block + dwt_compress(np.random.rand(len_last_block + block_size), 0.2, False).shape[0]
+
+
+        array_flatdim_coeff = np.zeros((len_all_blocks_trans, num_dim), dtype=np.float64)
+
+
+    # Return array for other methods
+    array_flatdim_coeff = np.zeros_like(array_flatdim)
+
 
     
     # If the last block is smaller than block_size/2, we will transform it togehter with the previous block.
@@ -69,9 +95,13 @@ def compress_dataset(dataset_array, dataset_id, andDecompress:bool, compression_
         start_idx = 0
         end_idx = block_size
 
-        coeff_list = []
+        coeffs_start_idx = 0
+        coeffs_end_idx = 0
 
         while not end_loop:
+
+
+
 
             # We check if we are in the block before the last block. If yes we check if we need to transform the last block together with the previous block.
             # If both yes we merge together and end loop.
@@ -85,21 +115,21 @@ def compress_dataset(dataset_array, dataset_id, andDecompress:bool, compression_
             if end_idx >= len_flat_dim:
                 end_idx = len_flat_dim
                 end_loop = True
-            
-            coeff_list += apply_compression(array_flatdim[start_idx:end_idx, i], compression_type, compression_param, andDecompress, level, wavelet, quantization_level).tolist()
-    
+
+            #print("end_idx: ", end_idx)
+
+            # Compress the block
+            # only for dwt
+            dwt_coeffs = apply_compression(array_flatdim[start_idx:end_idx, i], compression_type, compression_param, andDecompress)
+            coeffs_end_idx += dwt_coeffs.shape[0]
+
+            array_flatdim_coeff[coeffs_start_idx:coeffs_end_idx, i] = dwt_coeffs
+
+            coeffs_start_idx += dwt_coeffs.shape[0]
 
             # Adjust indices for next block
             start_idx = end_idx
             end_idx += block_size
-        
-        # Be aware of the line indents
-        if i == 0:
-            array_flatdim_coeff = np.zeros((len(coeff_list),num_dim))
-        
-        array_flatdim_coeff[:,i] = np.array(coeff_list)
-        
-
 
     # Depending on andDecompress return the compressed array(coefficients) or the decompressed array(Approximation).
     if andDecompress == False:
@@ -117,6 +147,8 @@ def compress_dataset(dataset_array, dataset_id, andDecompress:bool, compression_
 # Tested internal logic! And one simple test case!
 # dataset_array.shape -> (num_dp, len_ts, num_dim), array_flatdim_comp.shape -> (len_flat_dim, num_dim)
 def calculateCompRatio(dataset_array, array_flatdim_comp):
+
+   
 
 
     # Also gzip the raw_data

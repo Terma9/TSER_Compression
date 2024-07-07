@@ -1,6 +1,3 @@
-# DCT or DFT Compression
-
-#->> both methos shuld be alright, but need to be field tested!
 import pandas as pd
 import numpy as np
 from utils.data_loader import load_from_tsfile_to_dataframe
@@ -75,7 +72,6 @@ def compute_rmse_of_datapoint(matrix1, matrix2):
     return rmse_all/matrix1.shape[1], rmse_array
 
 
-
 # Adds all average rmse of all datapoints in the dataset, then returns average of that
 def compute_avg_rmse_of_dataset(dataset_array, dataset_array_comp):
     # calculate rmse per dp, for all datapoints, add and then divide by number of datapoints
@@ -84,3 +80,24 @@ def compute_avg_rmse_of_dataset(dataset_array, dataset_array_comp):
         rmse_all_dp += compute_rmse_of_datapoint(dataset_array[i,:,:], dataset_array_comp[i,:,:])[0]
     
     return rmse_all_dp/dataset_array.shape[0]
+
+
+
+def compute_mae_of_datapoint(matrix1, matrix2):
+    mae_all = 0
+    mae_array = np.zeros(matrix1.shape[1])
+    
+    for i in range(matrix1.shape[1]):
+        mae = np.mean(np.abs(matrix1[:,i] - matrix2[:,i]))
+        mae_array[i] = mae
+        mae_all += mae
+
+    return mae_all/matrix1.shape[1], mae_array
+
+
+def compute_avg_mae_of_dataset(dataset_array, dataset_array_comp):
+    mae_all_dp = 0
+    for i in range(dataset_array.shape[0]):
+        mae_all_dp += compute_mae_of_datapoint(dataset_array[i,:,:], dataset_array_comp[i,:,:])[0]
+    
+    return mae_all_dp/dataset_array.shape[0]
