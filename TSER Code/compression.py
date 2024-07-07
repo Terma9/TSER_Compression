@@ -3,7 +3,7 @@ import gzip
 
 from utils.compression_algos import *
 
-# define global dictionary -> these three are enough for testing -> decide for other datasets later to have sth. nice to write about them!
+# define global dictionary
 dataset_params = {
     'AppliancesEnergy':          {'block_size': 1008, 'num_dim': 24, 'len_ts': 144},
     'BeijingPM25Quality':        {'block_size': 1008, 'num_dim': 9, 'len_ts': 24},
@@ -27,14 +27,17 @@ dataset_params = {
 # Either returns the array with the coefficients of compression(for load_and_prepare_dataset)
 # or returns the array with decompressed values.(For calculating compression size.) Depending on andDecompress.
 
-def compress_dataset(dataset_array, dataset_id, andDecompress:bool, compression_type, compression_param, level, wavelet, quantization_level):
+# Default Quantization Level is 0 -> gave us best results
+# Default Wavelet is db4, for Flood and Covid switch to haar -> Change automatically!
+# Default level is 99 -> which gets translated to max_level in dwt_compress
+# (I keep explicit params, to later reprocude the Studies)
+
+def compress_dataset(dataset_array, dataset_id, andDecompress:bool, compression_type, compression_param, level = 99 , wavelet = "db4", quantization_level = 0):
 
     # Retrieve dataset parameters
     num_dim = dataset_params[dataset_id]['num_dim']
     len_ts = dataset_params[dataset_id]['len_ts'] 
     block_size = dataset_params[dataset_id]['block_size']
-
-    
 
 
     # Flatten the dataset array, put one matrix under the other: (num_dp, len_ts, dim) -> (len_flat_dim, dim)
@@ -44,6 +47,10 @@ def compress_dataset(dataset_array, dataset_id, andDecompress:bool, compression_
     if compression_type == 'dft' and andDecompress == False:
        array_flatdim = array_flatdim.astype(np.complex128)
 
+
+    # Change wavelet to haar, for last 2 Datasets
+    if dataset_id == "FloodModeling1" or dataset_id == "Covid3Month":
+        wavelet = "haar"
 
 
 
@@ -85,7 +92,7 @@ def compress_dataset(dataset_array, dataset_id, andDecompress:bool, compression_
             if end_idx >= len_flat_dim:
                 end_idx = len_flat_dim
                 end_loop = True
-            
+
             coeff_list += apply_compression(array_flatdim[start_idx:end_idx, i], compression_type, compression_param, andDecompress, level, wavelet, quantization_level).tolist()
     
 

@@ -15,6 +15,9 @@ from utils.compression_algos import *
 import os
 import matplotlib.pyplot as plt
 
+
+
+
 paths = {
     'AppliancesEnergy':   '/home/sim/Desktop/TS Extrinsic Regression/data/AppliancesEnergy_TEST.ts',
     'BeijingPM25Quality': '/home/sim/Desktop/TS Extrinsic Regression/data/BeijingPM25Quality_TEST.ts',
@@ -26,9 +29,6 @@ paths = {
     'FloodModeling1':             '/home/sim/Desktop/TS Extrinsic Regression/data/FloodModeling1_TEST.ts',
     'HouseholdPowerConsumption1': '/home/sim/Desktop/TS Extrinsic Regression/data/HouseholdPowerConsumption1_TEST.ts'
 }
-
-
-
 data_path = paths['IEEEPPG']
 
 

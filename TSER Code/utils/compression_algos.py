@@ -39,6 +39,7 @@ def apply_compression(signal, compression_type, comp_param, andDecompress:bool, 
 
 
 def dct_compress(signal, dropout_ratio, andDecompress:bool, quantization_level):
+
     # Apply DCT to the signal
     dct_coeffs = dct(signal, type=2, norm=None)
 
@@ -69,7 +70,7 @@ def dct_compress(signal, dropout_ratio, andDecompress:bool, quantization_level):
 
 
 # DFT with thresholding to simply handle hermetian symmetry problem.
-# This results in effect, that sometimes compression i a little weaker than the dropout_ratio demands.
+# This results in effect, that sometimes compression is a little weaker than the dropout_ratio demands. ( We only apply it on 1000er blocks, so it has not a big effect.)
 # Thresholding introducs small probability of cutting other coeff pairs, if by chance 2 frequencies have exactly the same amplitude.
 def dft_compress(signal, dropout_ratio, andDecompress:bool, quantization_level):
 
@@ -112,13 +113,12 @@ def dft_compress(signal, dropout_ratio, andDecompress:bool, quantization_level):
 
 
 # My decisions:
-# wavelet = db4
-# level = max_level / 2 and then to round up
+# wavelet = db4 and haar
 # compress both, detail and approximation coefficients
 # global and hard-cut thresholding
-# Signal Extension Mode = Periodic! If not, the len of coefficients is not equal to the len of the signal
+# Signal Extension Mode = periodization! If not, the len of coefficients is not equal to the len of the signal.
+# -> could use pywt coeff functions for less code!
 
-# -> couls use pywt coeff functions for less code!
 # extend for level and type for testing! -> remove after decision is made
 def dwt_compress(signal, dropout_ratio, andDecompress:bool, level, wavelet, quantization_level):
     """
@@ -129,22 +129,14 @@ def dwt_compress(signal, dropout_ratio, andDecompress:bool, level, wavelet, quan
     Returns:
         Decompressed signal (1D numpy array).
     """
-    # My parameters
-    #wavelet = 'db4'
 
     # Add manual max level depending on wavelet! + Also add max_level if hardcoded level is too high!
     max_level = pywt.dwt_max_level(len(signal), wavelet) 
 
     if(max_level < level):
         level = max_level
-    
-    # guarantees max_level / 2 and then to round up!
-    # level = (max_level +1 ) // 2
-    # level = max_level
 
-    
-
-
+        
     # Decompose the signal -> coeffs is a list of arrays!
     # Periodization is the right signal, not periodic!
     coeffs = pywt.wavedec(signal, wavelet, level=level, mode='periodization')
@@ -192,12 +184,6 @@ def dwt_compress(signal, dropout_ratio, andDecompress:bool, level, wavelet, quan
 
         return compressed_signal
     
-
-
-
-
-
-
 
 
 from numpy.polynomial.chebyshev import chebfit, chebval
