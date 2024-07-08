@@ -29,19 +29,19 @@ paths = {
     'FloodModeling1':             '/home/sim/Desktop/TS Extrinsic Regression/data/FloodModeling1_TEST.ts',
     'HouseholdPowerConsumption1': '/home/sim/Desktop/TS Extrinsic Regression/data/HouseholdPowerConsumption1_TEST.ts'
 }
-data_path = paths['IEEEPPG']
+data_path = paths['Covid3Month']
 
 
 dataset_array = load_dataset(data_path)
 dataset_id = os.path.basename(data_path).split('_')[0]
 
-a = dataset_array[0,:85,0]
-
-
-dwt_compress(a, 0.1, False).shape
 
 
 
+# Check if RMSE increases with increasing dropout_ratio
+for i in np.arange(0, 1.04, 0.04):
+    decompressed_dataset = compress_dataset(dataset_array.copy(), dataset_id, True, "dft", i) 
+    print(i, " ", compute_avg_rmse_of_dataset(dataset_array, decompressed_dataset))
 
 
 

@@ -27,12 +27,12 @@ dataset_params = {
 # Either returns the array with the coefficients of compression(for load_and_prepare_dataset)
 # or returns the array with decompressed values.(For calculating compression size.) Depending on andDecompress.
 
-# Default Quantization Level is 0 -> gave us best results
+# Default Quantization Level is 100, for dct best result was 0, for others I still have to check!
 # Default Wavelet is db4, for Flood and Covid switch to haar -> Change automatically!
 # Default level is 99 -> which gets translated to max_level in dwt_compress
 # (I keep explicit params, to later reprocude the Studies)
 
-def compress_dataset(dataset_array, dataset_id, andDecompress:bool, compression_type, compression_param, level = 99 , wavelet = "db4", quantization_level = 0):
+def compress_dataset(dataset_array, dataset_id, andDecompress:bool, compression_type, compression_param, level = 99 , wavelet = "db4", quantization_level = 100):
 
     # Retrieve dataset parameters
     num_dim = dataset_params[dataset_id]['num_dim']
@@ -52,6 +52,10 @@ def compress_dataset(dataset_array, dataset_id, andDecompress:bool, compression_
     if dataset_id == "FloodModeling1" or dataset_id == "Covid3Month":
         wavelet = "haar"
 
+
+    # 0 is best quantization level for dct! for the others I don't know!
+    if compression_type == 'dct':
+        quantization_level = 0
 
 
     # Length of all the time series in one dimension -> Assumption, all dimensions have the same length

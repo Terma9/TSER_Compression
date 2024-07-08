@@ -2,7 +2,8 @@ import pandas as pd
 import numpy as np
 from utils.data_loader import load_from_tsfile_to_dataframe
 from utils.regressor_tools import process_data
-
+import os
+from compression import *
 
 
 # Load Dataset into Array!
@@ -79,6 +80,60 @@ def compute_avg_mae_of_dataset(dataset_array, dataset_array_comp):
         mae_all_dp += compute_mae_of_datapoint(dataset_array[i,:,:], dataset_array_comp[i,:,:])[0]
     
     return mae_all_dp/dataset_array.shape[0]
+
+
+
+
+
+def test_compression():
+
+    paths = {
+    'AppliancesEnergy':   '/home/sim/Desktop/TS Extrinsic Regression/data/AppliancesEnergy_TEST.ts',
+    'BeijingPM25Quality': '/home/sim/Desktop/TS Extrinsic Regression/data/BeijingPM25Quality_TEST.ts',
+    'NewsTitleSentiment': '/home/sim/Desktop/TS Extrinsic Regression/data/Covid3Month_TEST.ts'
+    }
+    comp_techniques = ['dct','dft','dwt']
+    
+
+
+
+    for path in paths:
+        data_path = paths[path]
+
+        dataset_array = load_dataset(data_path)
+        dataset_id = os.path.basename(data_path).split('_')[0]
+
+        print(f"+++ {dataset_id} +++")
+
+        for comp_tq in comp_techniques:
+            print(f"$$$ {comp_tq} $$$")
+
+            print("RMSE")
+            for i in np.arange(0, 1.04, 0.04):
+                decompressed_dataset = compress_dataset(dataset_array.copy(), dataset_id, True, "dwt", i) 
+                print(f"{i:.2f}  {compute_avg_rmse_of_dataset(dataset_array, decompressed_dataset)}")
+
+            print("\n")
+
+            print("Comp-Ratio")
+            for i in np.arange(0, 1.04, 0.04):
+                decompressed_dataset = compress_dataset(dataset_array.copy(), dataset_id, False, "dwt", i) 
+                print(f"{i:.2f}  {calculateCompRatio(dataset_array, decompressed_dataset)}")
+
+            print("\n")
+            print("\n")
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

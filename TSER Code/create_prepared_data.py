@@ -139,17 +139,29 @@ def load_and_prepare_everything(data_path: str, compression_type: str, compressi
 def main():
     # Don't overwrite stuff! Comment what is not needed!
 
-    data_train_path = "/home/sim/Desktop/TS Extrinsic Regression/data/AppliancesEnergy_TRAIN.ts"
-    data_test_path = "/home/sim/Desktop/TS Extrinsic Regression/data/AppliancesEnergy_TEST.ts"
+    data_train_path = "/home/sim/Desktop/TS Extrinsic Regression/data/Covid3Month_TRAIN.ts"
+    data_test_path = "/home/sim/Desktop/TS Extrinsic Regression/data/Covid3Month_TEST.ts"
+
+
+    #data_train_path = "/home/sim/Desktop/TS Extrinsic Regression/data/AppliancesEnergy_TRAIN.ts"
+    #data_test_path = "/home/sim/Desktop/TS Extrinsic Regression/data/AppliancesEnergy_TEST.ts"
     #data_train_path = "/home/sim/Desktop/TS Extrinsic Regression/data/BeijingPM25Quality_TRAIN.ts"
     #data_test_path = "/home/sim/Desktop/TS Extrinsic Regression/data/BeijingPM25Quality_TEST.ts"
     #data_train_path = "/home/sim/Desktop/TS Extrinsic Regression/data/IEEEPPG_TRAIN.ts"
     #data_test_path = "/home/sim/Desktop/TS Extrinsic Regression/data/IEEEPPG_TEST.ts"
 
-    train_data, train_features = load_and_prepare_everything(data_train_path)
-    test_data, test_features = load_and_prepare_everything(data_test_path)
+    train_data, train_features = load_and_prepare_everything(data_train_path, "dct", 0.5)
+    test_data, test_features = load_and_prepare_everything(data_test_path, "dct", 0.5)
 
     # Save data for later, and load it
+
+    train_data.to_csv('/home/sim/Desktop/TS Extrinsic Regression/data/prepared_data/Covid3Month_TRAIN_ts_and_features.csv', index=False)
+    train_features.to_csv('/home/sim/Desktop/TS Extrinsic Regression/data/prepared_data/Covid3Month_TRAIN_features.csv', index=False)
+
+    test_data.to_csv('/home/sim/Desktop/TS Extrinsic Regression/data/prepared_data/Covid3Month_TEST_ts_and_features.csv', index=False)
+    test_features.to_csv('/home/sim/Desktop/TS Extrinsic Regression/data/prepared_data/Covid3Month_TEST_features.csv', index=False)
+
+
     #train_data.to_csv('/home/sim/Desktop/TS Extrinsic Regression/data/prepared_data/AppliancesEnergy_TRAIN_ts_and_features.csv', index=False)
     #train_features.to_csv('/home/sim/Desktop/TS Extrinsic Regression/data/prepared_data/AppliancesEnergy_TRAIN_features.csv', index=False)
     #test_data.to_csv('/home/sim/Desktop/TS Extrinsic Regression/data/prepared_data/AppliancesEnergy_TEST_ts_and_features.csv', index=False)
