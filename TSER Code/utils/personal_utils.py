@@ -110,14 +110,14 @@ def test_compression():
 
             print("RMSE")
             for i in np.arange(0, 1.04, 0.04):
-                decompressed_dataset = compress_dataset(dataset_array.copy(), dataset_id, True, "dwt", i) 
+                decompressed_dataset = compress_dataset(dataset_array.copy(), dataset_id, True, comp_tq, i) 
                 print(f"{i:.2f}  {compute_avg_rmse_of_dataset(dataset_array, decompressed_dataset)}")
 
             print("\n")
 
             print("Comp-Ratio")
             for i in np.arange(0, 1.04, 0.04):
-                decompressed_dataset = compress_dataset(dataset_array.copy(), dataset_id, False, "dwt", i) 
+                decompressed_dataset = compress_dataset(dataset_array.copy(), dataset_id, False, comp_tq, i) 
                 print(f"{i:.2f}  {calculateCompRatio(dataset_array, decompressed_dataset)}")
 
             print("\n")
