@@ -12,10 +12,10 @@ from flaml import AutoML
 
 #Load already prepared data
 #train_data = pd.read_csv('/home/sim/Desktop/TS Extrinsic Regression/Checking Out Data/data/prepared_data/AppliancesEnergy_TRAIN_ts_and_features.csv')
-train_data = pd.read_csv('/home/sim/Desktop/TS Extrinsic Regression/Checking Out Data/data/prepared_data/AppliancesEnergy_TRAIN_features.csv')
+train_data = pd.read_csv('/home/sim/Desktop/TS Extrinsic Regression/data/prepared_data/Covid3Month_TRAIN_features.csv')
 
 #test_data = pd.read_csv('/home/sim/Desktop/TS Extrinsic Regression/Checking Out Data/data/prepared_data/AppliancesEnergy_TEST_ts_and_features.csv')
-test_data = pd.read_csv('/home/sim/Desktop/TS Extrinsic Regression/Checking Out Data/data/prepared_data/AppliancesEnergy_TEST_features.csv')
+test_data = pd.read_csv('/home/sim/Desktop/TS Extrinsic Regression/data/prepared_data/Covid3Month_TEST_features.csv')
 
 test_y = test_data["target"].values
 
@@ -55,7 +55,7 @@ fwiz.features
 automl_settings = {
     "task" : "regression",
     "metric" : "mse",
-    "time_budget" :300,
+    "time_budget" :100,
     "log_file_name" : "flaml_log_basic.log",
 
 }
