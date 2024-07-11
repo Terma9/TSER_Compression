@@ -16,15 +16,15 @@ from flaml import AutoML
 
 
 
-def run_flaml(source_path, experiment_name, run_name, time):
+def run_flaml(source_path_train, source_path_test, experiment_name, run_name, time):
 
 
     #Load already prepared data
     #train_data = pd.read_csv('/home/sim/Desktop/TS Extrinsic Regression/Checking Out Data/data/prepared_data/AppliancesEnergy_TRAIN_ts_and_features.csv')
-    train_data = pd.read_csv(source_path)
+    train_data = pd.read_csv(source_path_train)
 
     #test_data = pd.read_csv('/home/sim/Desktop/TS Extrinsic Regression/Checking Out Data/data/prepared_data/AppliancesEnergy_TEST_ts_and_features.csv')
-    test_data = pd.read_csv(source_path)
+    test_data = pd.read_csv(source_path_test)
 
     test_y = test_data["target"].values
 
@@ -131,10 +131,11 @@ def run_flaml(source_path, experiment_name, run_name, time):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Run FLAML with specified parameters.")
-    parser.add_argument("source_path", type=str, help="Path to the source CSV file")
+    parser.add_argument("source_path_train", type=str, help="Path to the source CSV file")
+    parser.add_argument("source_path_test", type=str, help="Path to the source CSV file")
     parser.add_argument("experiment_name", type=str, help="Name of the MLflow experiment")
     parser.add_argument("run_name", type=str, help="Name of the MLflow run")
     parser.add_argument("time", type=int, help="Time budget for FLAML in seconds")
 
     args = parser.parse_args()
-    run_flaml(args.source_path, args.experiment_name, args.run_name, args.time)
+    run_flaml(args.source_path_train, args.source_path_test, args.experiment_name, args.run_name, args.time)
