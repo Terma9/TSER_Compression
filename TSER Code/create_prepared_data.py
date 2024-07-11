@@ -188,7 +188,7 @@ def main():
                 train_data.to_csv(dest_path + name + "_TRAIN" + "_dct_" + str(i) + '_ts_and_features.csv', index=False)
                 train_features.to_csv(dest_path + name + "_TRAIN" + "_dct_" + str(i) + '_features.csv', index=False)
 
-                test_data.to_csv(dest_path +  + name +"_TEST" + "_dct_" + str(i) + '_ts_and_features.csv', index=False)
+                test_data.to_csv(dest_path + name +"_TEST" + "_dct_" + str(i) + '_ts_and_features.csv', index=False)
                 test_features.to_csv(dest_path + name +"_TEST" + "_dct_" + str(i) + '_features.csv', index=False)
 
 
