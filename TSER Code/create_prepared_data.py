@@ -145,18 +145,20 @@ def main():
 
     # For first Pipeline run
 
-    data_paths = [
+    data_names = [
     
-        '/home/simon/TSER/Time_Series_Data/FloodModeling1',
-        '/home/simon/TSER/Time_Series_Data/AppliancesEnergy',
-        '/home/simon/TSER/Time_Series_Data/Covid3Month'
+        'FloodModeling1',
+        'AppliancesEnergy',
+        'Covid3Month'
     ]
 
-    for path in data_paths:
+    source_path = '/home/simon/TSER/Time_Series_Data/'
+
+    for name in data_names:
 
 
-        data_train_path = path + "_TRAIN.ts"
-        data_test_path = path + "_TEST.ts"
+        data_train_path = source_path + name + "_TRAIN.ts"
+        data_test_path = source_path + name + "_TEST.ts"
 
 
         train_data, train_features = load_and_prepare_everything(data_train_path, None, -1)
@@ -166,15 +168,15 @@ def main():
 
 
 
-        train_data.to_csv(dest_path + "_TRAIN" + "_None_" +'_ts_and_features.csv', index=False)
-        train_features.to_csv(dest_path + "_TRAIN" + "_None_" + '_features.csv', index=False)
+        train_data.to_csv(dest_path + name + "_TRAIN" + "_None_" +'_ts_and_features.csv', index=False)
+        train_features.to_csv(dest_path + name + "_TRAIN" + "_None_" + '_features.csv', index=False)
 
-        test_data.to_csv(dest_path + "_TEST" + "_None_" + '_ts_and_features.csv', index=False)
-        test_features.to_csv(dest_path + "_TEST" +"_None_" + '_features.csv', index=False)
+        test_data.to_csv(dest_path + name + "_TEST" + "_None_" + '_ts_and_features.csv', index=False)
+        test_features.to_csv(dest_path + name + "_TEST" +"_None_" + '_features.csv', index=False)
 
 
         # Load extra 5 dct for testing in beginning!
-        if path == '/home/simon/Time_Series_Data/AppliancesEnergy':
+        if name == 'AppliancesEnergy':
 
             for i in [0.5,0.75,0.85,0.95,0.99]:
 
@@ -182,11 +184,11 @@ def main():
                 test_data, test_features = load_and_prepare_everything(data_test_path, 'dct', i)
 
 
-                train_data.to_csv(dest_path + "_TRAIN" + "_dct_" + str(i) + '_ts_and_features.csv', index=False)
-                train_features.to_csv(dest_path + "_TRAIN" + "_dct_" + str(i) + '_features.csv', index=False)
+                train_data.to_csv(dest_path + name + "_TRAIN" + "_dct_" + str(i) + '_ts_and_features.csv', index=False)
+                train_features.to_csv(dest_path + name + "_TRAIN" + "_dct_" + str(i) + '_features.csv', index=False)
 
-                test_data.to_csv(dest_path + "_TEST" + "_dct_" + str(i) + '_ts_and_features.csv', index=False)
-                test_features.to_csv(dest_path + "_TEST" + "_dct_" + str(i) + '_features.csv', index=False)
+                test_data.to_csv(dest_path +  + name +"_TEST" + "_dct_" + str(i) + '_ts_and_features.csv', index=False)
+                test_features.to_csv(dest_path + name +"_TEST" + "_dct_" + str(i) + '_features.csv', index=False)
 
 
 
