@@ -88,9 +88,10 @@ def compute_avg_mae_of_dataset(dataset_array, dataset_array_comp):
 def test_compression():
 
     paths = {
+    'FloodModeling1': '/home/sim/Desktop/TS Extrinsic Regression/data/FloodModeling1_TEST.ts',
     'AppliancesEnergy':   '/home/sim/Desktop/TS Extrinsic Regression/data/AppliancesEnergy_TEST.ts',
     'BeijingPM25Quality': '/home/sim/Desktop/TS Extrinsic Regression/data/BeijingPM25Quality_TEST.ts',
-    'NewsTitleSentiment': '/home/sim/Desktop/TS Extrinsic Regression/data/Covid3Month_TEST.ts'
+    'NewsTitleSentiment': '/home/sim/Desktop/TS Extrinsic Regression/data/NewsTitleSentiment_TEST.ts'
     }
     comp_techniques = ['dct','dft','dwt']
     

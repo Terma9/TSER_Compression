@@ -14,7 +14,7 @@ test_data = pd.read_csv('/home/sim/Desktop/TS Extrinsic Regression/data/prepared
 
 test_y = test_data["target"].values
 
-mlflow.set_tracking_uri("http://127.0.0.1:5000")
+mlflow.set_tracking_uri("http://127.0.0.1:5001")
 
 #mlflow.set_experiment("BeijingPM25_Dataset")
 mlflow.set_experiment("ApplianacesEnergy_Dataset")

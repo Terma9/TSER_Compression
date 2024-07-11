@@ -14,6 +14,7 @@ import os # for extracting dataset_id
 
 
 
+
 # Small helper Function for loading data and applying compression.
 # Return the compressed Dataset. Either as flat_dim if noDecompres, or as (num_dp, len_ts, num_dim) if andDecompress=True
 
@@ -44,6 +45,9 @@ def load_and_compress(data_path: str, compression_type: str, compression_param: 
 # Function that returns ready to use df of ts_and_features and features
 # adds y as "target" into df 
 # If compression_type is None, no compression is applied. Possible compression types: 'dwt', 'dct', 'dft'
+
+
+# For load and prepare without compression, compression_type = None! -> keep in mind, compression_param = 0 is different than no compression!
 
 def load_and_prepare_everything(data_path: str, compression_type: str, compression_param: float):
     
@@ -139,44 +143,53 @@ def load_and_prepare_everything(data_path: str, compression_type: str, compressi
 def main():
     # Don't overwrite stuff! Comment what is not needed!
 
-    data_train_path = "/home/sim/Desktop/TS Extrinsic Regression/data/Covid3Month_TRAIN.ts"
-    data_test_path = "/home/sim/Desktop/TS Extrinsic Regression/data/Covid3Month_TEST.ts"
+    # For first Pipeline run
+
+    data_paths = [
+    
+        '/home/simon/TSER/Time_Series_Data/FloodModeling1',
+        '/home/simon/TSER/Time_Series_Data/AppliancesEnergy',
+        '/home/simon/TSER/Time_Series_Data/Covid3Month'
+    ]
+
+    for path in data_paths:
 
 
-    #data_train_path = "/home/sim/Desktop/TS Extrinsic Regression/data/AppliancesEnergy_TRAIN.ts"
-    #data_test_path = "/home/sim/Desktop/TS Extrinsic Regression/data/AppliancesEnergy_TEST.ts"
-    #data_train_path = "/home/sim/Desktop/TS Extrinsic Regression/data/BeijingPM25Quality_TRAIN.ts"
-    #data_test_path = "/home/sim/Desktop/TS Extrinsic Regression/data/BeijingPM25Quality_TEST.ts"
-    #data_train_path = "/home/sim/Desktop/TS Extrinsic Regression/data/IEEEPPG_TRAIN.ts"
-    #data_test_path = "/home/sim/Desktop/TS Extrinsic Regression/data/IEEEPPG_TEST.ts"
-
-    train_data, train_features = load_and_prepare_everything(data_train_path, "dct", 0.5)
-    test_data, test_features = load_and_prepare_everything(data_test_path, "dct", 0.5)
-
-    # Save data for later, and load it
-
-    train_data.to_csv('/home/sim/Desktop/TS Extrinsic Regression/data/prepared_data/Covid3Month_TRAIN_ts_and_features.csv', index=False)
-    train_features.to_csv('/home/sim/Desktop/TS Extrinsic Regression/data/prepared_data/Covid3Month_TRAIN_features.csv', index=False)
-
-    test_data.to_csv('/home/sim/Desktop/TS Extrinsic Regression/data/prepared_data/Covid3Month_TEST_ts_and_features.csv', index=False)
-    test_features.to_csv('/home/sim/Desktop/TS Extrinsic Regression/data/prepared_data/Covid3Month_TEST_features.csv', index=False)
+        data_train_path = path + "_TRAIN.ts"
+        data_test_path = path + "_TEST.ts"
 
 
-    #train_data.to_csv('/home/sim/Desktop/TS Extrinsic Regression/data/prepared_data/AppliancesEnergy_TRAIN_ts_and_features.csv', index=False)
-    #train_features.to_csv('/home/sim/Desktop/TS Extrinsic Regression/data/prepared_data/AppliancesEnergy_TRAIN_features.csv', index=False)
-    #test_data.to_csv('/home/sim/Desktop/TS Extrinsic Regression/data/prepared_data/AppliancesEnergy_TEST_ts_and_features.csv', index=False)
-    #test_features.to_csv('/home/sim/Desktop/TS Extrinsic Regression/data/prepared_data/AppliancesEnergy_TEST_features.csv', index=False)   
+        train_data, train_features = load_and_prepare_everything(data_train_path, None, -1)
+        test_data, test_features = load_and_prepare_everything(data_test_path, None, -1)
 
-    #train_data.to_csv('/home/sim/Desktop/TS Extrinsic Regression/data/prepared_data/BeijingPM25Quality_TRAIN_ts_and_features.csv',index=False)
-    #train_features.to_csv('/home/sim/Desktop/TS Extrinsic Regression/data/prepared_data/BeijingPM25Quality_TRAIN_features.csv', index=False)
-    #test_data.to_csv('/home/sim/Desktop/TS Extrinsic Regression/data/prepared_data/BeijingPM25Quality_TEST_ts_and_features.csv',index=False)
-    #test_features.to_csv('/home/sim/Desktop/TS Extrinsic Regression/data/prepared_data/BeijingPM25Quality_TEST_features.csv',index=False)   
+        dest_path = '/home/simon/TSER/preparedData/'
 
 
-    #train_data.to_csv('/home/sim/Desktop/TS Extrinsic Regression/data/prepared_data/IEEEPPG_TRAIN_ts_and_features.csv', index=False)
-    #train_features.to_csv('/home/sim/Desktop/TS Extrinsic Regression/data/prepared_data/IEEEPPG_TRAIN_features.csv', index=False)
-    #test_data.to_csv('/home/sim/Desktop/TS Extrinsic Regression/data/prepared_data/IEEEPPG_TEST_ts_and_features.csv', index=False)
-    #test_features.to_csv('/home/sim/Desktop/TS Extrinsic Regression/data/prepared_data/IEEEPPG_TEST_features.csv', index=False)  
+
+        train_data.to_csv(dest_path + "_TRAIN" + "_None_" +'_ts_and_features.csv', index=False)
+        train_features.to_csv(dest_path + "_TRAIN" + "_None_" + '_features.csv', index=False)
+
+        test_data.to_csv(dest_path + "_TEST" + "_None_" + '_ts_and_features.csv', index=False)
+        test_features.to_csv(dest_path + "_TEST" +"_None_" + '_features.csv', index=False)
+
+
+        # Load extra 5 dct for testing in beginning!
+        if path == '/home/simon/Time_Series_Data/AppliancesEnergy':
+
+            for i in [0.5,0.75,0.85,0.95,0.99]:
+
+                train_data, train_features = load_and_prepare_everything(data_train_path, 'dct', i)
+                test_data, test_features = load_and_prepare_everything(data_test_path, 'dct', i)
+
+
+                train_data.to_csv(dest_path + "_TRAIN" + "_dct_" + str(i) + '_ts_and_features.csv', index=False)
+                train_features.to_csv(dest_path + "_TRAIN" + "_dct_" + str(i) + '_features.csv', index=False)
+
+                test_data.to_csv(dest_path + "_TEST" + "_dct_" + str(i) + '_ts_and_features.csv', index=False)
+                test_features.to_csv(dest_path + "_TEST" + "_dct_" + str(i) + '_features.csv', index=False)
+
+
+
 
 
     print("successfull loading")
@@ -188,7 +201,7 @@ def print_progress():
         formatted_time = time.strftime("%H:%M:%S %p", current_time)
         print("Program is still running...")
         print("Current Time =", formatted_time)
-        time.sleep(5)
+        time.sleep(300)
 
 
 if __name__ == "__main__":

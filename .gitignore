@@ -1,4 +1,6 @@
 data/
 .venvAutogluon
 .venvFlamlFwiz
-.venvTesting
+.venvAutogluonServer
+.venvFlamlFwiz
+**/__pycache__/
