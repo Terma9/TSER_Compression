@@ -34,7 +34,7 @@ def run_agluon(source_path, experiment_name, run_name, time):
     agluon_settings = {
         "time_limit" : time,
         "presets" : "good_quality",
-        "num_cpus" : 24
+        #"num_cpus" : 24
     }
 
     # Autogluon needs train_data and target in one df, target has to be named target
