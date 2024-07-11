@@ -149,7 +149,8 @@ def main():
     
         'FloodModeling1',
         'AppliancesEnergy',
-        'Covid3Month'
+        'Covid3Month',
+        'BeijingPM25Quality'
     ]
 
     source_path = '/home/simon/TSER/Time_Series_Data/'
