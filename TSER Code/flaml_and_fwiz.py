@@ -63,9 +63,11 @@ def run_flaml(source_path, experiment_name, run_name, time):
     # rsme doesn't exist
     automl_settings = {
         "task" : "regression",
-        "metric" : "mse",
+        "metric" : "rmse",
         "time_budget" : time,
         "log_file_name" : "flaml_log_basic.log",
+        "n_jobs" : 24
+
 
     }
 
