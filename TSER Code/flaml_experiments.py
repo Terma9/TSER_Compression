@@ -31,7 +31,7 @@ def best_time():
 def test_deterministic():
     source_path = path + ds_name + '_TRAIN_None__features.csv'
 
-    for i in range(3)
+    for i in range(3):
         run_flaml(source_path, 'Test deterministic', f'Run{i+1} Appliances Flaml 5min', 5 * 60)
 
 
