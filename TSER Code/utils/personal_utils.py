@@ -126,6 +126,20 @@ def test_compression():
 
 
 
+# Returns compratio of dataset with comp_tq and dropout_value
+# Datapath of .ts
+def get_compratio(data_path_ts, comp_tq, dropout_value):
+    dataset_array = load_dataset(data_path_ts)
+    dataset_id = os.path.basename(data_path_ts).split('_')[0]
+
+    return calculateCompRatio(dataset_array, compress_dataset(dataset_array.copy(), dataset_id, False, comp_tq, dropout_value))
+
+
+
+
+
+
+
 
 
 
