@@ -31,14 +31,14 @@ def tsf_or_f():
 
 def best_time():
     # Letting run only with features
-    source_path = path + ds_name + '_TRAIN_None__features.csv'
+    source_path = path + ds_name + '_TRAIN_None__ts_and_features.csv'
 
     ds_names = ['FloodModeling1', 'Covid3Month', 'AppliancesEnergy']
     times = [1 ,5, 15, 20, 25, 30, 60]
 
     for ds_name in ds_names:
         for time in times:
-            run_flaml(source_path, 'Test best runtime', f'{time}min Appliances Flaml', time * 60)
+            run_flaml(source_path, 'Test best runtime', f'{time}min {ds_name} Flaml tsf', time * 60)
 
 
 
