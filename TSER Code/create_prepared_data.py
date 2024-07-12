@@ -139,7 +139,7 @@ def load_and_prepare_everything(data_path: str, compression_type: str, compressi
 
 
 
-# add Dictionary to easily decide which dataset to use, improve whole code
+
 def main():
     # Don't overwrite stuff! Comment what is not needed!
 
@@ -150,7 +150,7 @@ def main():
         'FloodModeling1',
         'AppliancesEnergy',
         'Covid3Month',
-        'BeijingPM25Quality'
+        #'BeijingPM25Quality'
     ]
 
     source_path = '/home/simon/TSER/Time_Series_Data/'
