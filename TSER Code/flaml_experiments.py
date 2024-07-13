@@ -65,9 +65,9 @@ def testrun_dct():
     comp_ratios = []
 
     for i in [0.5,0.75,0.85,0.95,0.99]:
-        source_path = path + ds_name + '_TRAIN' + '_dct' + f'_{i}' + '_features.csv'
+        source_path = path + ds_name + '_TRAIN' + '_dct' + f'_{i}' + 'ts_and_features.csv'
 
-        rmse = run_flaml(source_path, 'Appliances dct test run', f'{i} dct Appliances Flaml', 15 * 60)
+        rmse = run_flaml(source_path, 'Appliances dct test run', f'{i} Appliances dct 15min Flaml tsf', 15 * 60)
 
 
         rmse_values += rmse
@@ -80,18 +80,17 @@ def testrun_dct():
         comp_Ratio_train = get_compratio(data_path_ts, 'dct', i)
         comp_Ratio_test = get_compratio(data_path_ts.replace('TRAIN','TEST'), 'dct', i)
 
-        comp_ratios += (comp_Ratio_train + comp_Ratio_test) / 2
+        comp_ratios += ((comp_Ratio_train + comp_Ratio_test) / 2)
 
     
     # Maybe Change name when doing it finally for all datasets and tq -> will have 25 of those
-    np.savez('rsme_compRatio.npz', array1=np.array(rmse_values), array2=np.array(comp_ratios))
-
+    np.savez('rsme_compRatio.npz', rmse_values=np.array(rmse_values), comp_ratios=np.array(comp_ratios))
 
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Run specific function.')
-    parser.add_argument('function', type=str, choices=['tsf_or_f', 'best_time', 'test_deterministic'],
-                        help='The function to run: tsf_or_f, best_time, or test_deterministic')
+    parser.add_argument('function', type=str, choices=['tsf_or_f', 'best_time', 'test_deterministic', 'testrun_dct'],
+                        help='The function to run: tsf_or_f, best_time, test_deterministic, or testrun_dct')
     
     args = parser.parse_args()
     
@@ -101,7 +100,8 @@ if __name__ == "__main__":
         best_time()
     elif args.function == 'test_deterministic':
         test_deterministic()
-
+    elif args.function == 'testrun_dct':
+        testrun_dct()
     
 
 
