@@ -157,7 +157,7 @@ def main():
 
     for name in data_names:
 
-
+        # simplify by using .rename
         data_train_path = source_path + name + "_TRAIN.ts"
         data_test_path = source_path + name + "_TEST.ts"
 

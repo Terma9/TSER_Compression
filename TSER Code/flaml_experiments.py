@@ -48,7 +48,7 @@ def best_time():
 def test_deterministic():
     source_path = path + ds_name + '_TRAIN_None__features.csv'
 
-    for i in range(3):
+    for i in range(5):
         run_flaml(source_path, 'Test deterministic', f'Run{i+1} Appliances Flaml 5min', 5 * 60)
 
 
@@ -65,34 +65,37 @@ def testrun_dct():
     comp_ratios = []
 
     # First run with no compression. I take Compression Ratio one!
+    ds_names = ['FloodModeling1', 'Covid3Month']
+
+    for ds_name in ds_names:
     
-    source_path = path + 'AppliancesEnergy' + '_TRAIN_None__ts_and_features.csv'
-    rmse = run_flaml(source_path, 'Appliances dct test run', f'NONE Appliances dct 15min Flaml tsf', 15 * 60)
-    rmse_values.append(rmse)
-    comp_ratios.append(1.0)
-
-
-    for i in [0.5,0.75,0.85,0.95,0.99]:
-        source_path = path + ds_name + '_TRAIN' + '_dct' + f'_{i}' + '_ts_and_features.csv'
-
-        rmse = run_flaml(source_path, 'Appliances dct test run', f'{i} Appliances dct 15min Flaml tsf', 15 * 60)
-
+        source_path = path + ds_name + '_TRAIN_None__ts_and_features.csv'
+        rmse = run_flaml(source_path, f'{ds_name} dct test run', f'NONE {ds_name} dct 15min Flaml tsf', 15 * 60)
         rmse_values.append(rmse)
-
-        # Get the comp ratio of TEST-SET and of TRAIN SET, then add and divide by 2 -> Compression Ratio of both sets! More accurate than only one!
-        ts_name = 'AppliancesEnergy_TRAIN.ts'
-        data_path_ts = path_ts + ts_name
+        comp_ratios.append(1.0)
 
 
-        comp_Ratio_train = get_compratio(data_path_ts, 'dct', i)
-        comp_Ratio_test = get_compratio(data_path_ts.replace('TRAIN','TEST'), 'dct', i)
-        avg_compRatio = ((comp_Ratio_train + comp_Ratio_test) / 2)
-        comp_ratios.append(avg_compRatio)
+        for i in [0.5,0.75,0.85,0.95,0.99]:
+            source_path = path + ds_name + '_TRAIN' + '_dct' + f'_{i}' + '_ts_and_features.csv'
 
-    
-    # Maybe Change name when doing it finally for all datasets and tq -> will have 25 of those
-    # adapt name properly of npz data
-    np.savez('rsme_compRatio.npz', rmse_values=np.array(rmse_values), comp_ratios=np.array(comp_ratios))
+            rmse = run_flaml(source_path, f'{ds_name} dct test run', f'NONE {ds_name} dct 15min Flaml tsf', 15 * 60)
+
+            rmse_values.append(rmse)
+
+            # Get the comp ratio of TEST-SET and of TRAIN SET, then add and divide by 2 -> Compression Ratio of both sets! More accurate than only one!
+            ts_name = ds_name + '_TRAIN.ts'
+            data_path_ts = path_ts + ts_name
+
+
+            comp_Ratio_train = get_compratio(data_path_ts, 'dct', i)
+            comp_Ratio_test = get_compratio(data_path_ts.replace('TRAIN','TEST'), 'dct', i)
+            avg_compRatio = ((comp_Ratio_train + comp_Ratio_test) / 2)
+            comp_ratios.append(avg_compRatio)
+
+        
+        # Maybe Change name when doing it finally for all datasets and tq -> will have 25 of those
+        # adapt name properly of npz data
+        np.savez(ds_name + ' dct ' + 'rsme_compRatio.npz', rmse_values=np.array(rmse_values), comp_ratios=np.array(comp_ratios))
 
 
 if __name__ == "__main__":
