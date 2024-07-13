@@ -79,8 +79,8 @@ def testrun_dct():
 
         comp_Ratio_train = get_compratio(data_path_ts, 'dct', i)
         comp_Ratio_test = get_compratio(data_path_ts.replace('TRAIN','TEST'), 'dct', i)
-
-        comp_ratios += ((comp_Ratio_train + comp_Ratio_test) / 2)
+        avg_compRatio = ((comp_Ratio_train + comp_Ratio_test) / 2)
+        comp_ratios.append(avg_compRatio)
 
     
     # Maybe Change name when doing it finally for all datasets and tq -> will have 25 of those
