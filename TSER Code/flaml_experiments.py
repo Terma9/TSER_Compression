@@ -65,7 +65,7 @@ def testrun_dct():
     comp_ratios = []
 
     for i in [0.5,0.75,0.85,0.95,0.99]:
-        source_path = path + ds_name + '_TRAIN' + '_dct' + f'_{i}' + 'ts_and_features.csv'
+        source_path = path + ds_name + '_TRAIN' + '_dct' + f'_{i}' + '_ts_and_features.csv'
 
         rmse = run_flaml(source_path, 'Appliances dct test run', f'{i} Appliances dct 15min Flaml tsf', 15 * 60)
 
