@@ -141,7 +141,7 @@ def load_and_prepare_everything(data_path: str, compression_type: str, compressi
     #ts_and_features = pd.concat([prep_data.drop(columns=['target']), all_features], axis=1)
 
 
-    return all_features
+    return all_features, all_features
 
 
 
@@ -172,7 +172,7 @@ def main():
         train_data, train_features = load_and_prepare_everything(data_train_path, None, -1)
 
 
-        
+
         test_data, test_features = load_and_prepare_everything(data_test_path, None, -1)
 
         dest_path = '/home/simon/TSER/preparedData/'
