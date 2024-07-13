@@ -126,7 +126,8 @@ def run_flaml(source_path_train, experiment_name, run_name, time):
         mlflow.log_metrics(metrics)
 
     
-    return rmse
+    # item() because it is a NDArray[Any]
+    return rmse.item()
 
 
 

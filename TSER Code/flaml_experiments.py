@@ -64,13 +64,20 @@ def testrun_dct():
     rmse_values = []
     comp_ratios = []
 
+    # First run with no compression. I take Compression Ratio one!
+    
+    source_path = path + 'AppliancesEnergy' + '_TRAIN_None__ts_and_features.csv'
+    rmse = run_flaml(source_path, 'Appliances dct test run', f'NONE Appliances dct 15min Flaml tsf', 15 * 60)
+    rmse_values.append(rmse)
+    comp_ratios.append(1.0)
+
+
     for i in [0.5,0.75,0.85,0.95,0.99]:
         source_path = path + ds_name + '_TRAIN' + '_dct' + f'_{i}' + '_ts_and_features.csv'
 
         rmse = run_flaml(source_path, 'Appliances dct test run', f'{i} Appliances dct 15min Flaml tsf', 15 * 60)
 
-
-        rmse_values += rmse
+        rmse_values.append(rmse)
 
         # Get the comp ratio of TEST-SET and of TRAIN SET, then add and divide by 2 -> Compression Ratio of both sets! More accurate than only one!
         ts_name = 'AppliancesEnergy_TRAIN.ts'
@@ -84,6 +91,7 @@ def testrun_dct():
 
     
     # Maybe Change name when doing it finally for all datasets and tq -> will have 25 of those
+    # adapt name properly of npz data
     np.savez('rsme_compRatio.npz', rmse_values=np.array(rmse_values), comp_ratios=np.array(comp_ratios))
 
 
