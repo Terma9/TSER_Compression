@@ -149,7 +149,7 @@ def main():
 
     data_names = [
 
-        'HouseholdPowerConsumption1',
+        #'HouseholdPowerConsumption1',
         'IEEEPPG',
         #'FloodModeling1',
         #'AppliancesEnergy',
