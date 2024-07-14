@@ -167,10 +167,13 @@ def main():
 
       
         start_time = time.strftime("%H:%M:%S %p", time.localtime())
+        train_data, train_features = load_and_prepare_everything(data_train_path, None, -1)
+        end_time = time.strftime("%H:%M:%S %p", time.localtime())
+        print(f'Successfull loading of {name} TEST. Starttime: {start_time}. Endtime: {end_time}')
 
-        #train_data, train_features = load_and_prepare_everything(data_train_path, None, -1)
+
+        start_time = time.strftime("%H:%M:%S %p", time.localtime())
         test_data, test_features = load_and_prepare_everything(data_test_path, None, -1)
-
         end_time = time.strftime("%H:%M:%S %p", time.localtime())
 
         print(f'Successfull loading of {name} TEST. Starttime: {start_time}. Endtime: {end_time}')
