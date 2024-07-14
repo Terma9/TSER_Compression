@@ -149,8 +149,8 @@ def main():
 
     data_names = [
 
-        #'HouseholdPowerConsumption1',
-        #'IEEEPPG'
+        'HouseholdPowerConsumption1',
+        'IEEEPPG',
         #'FloodModeling1',
         #'AppliancesEnergy',
         #'Covid3Month',
@@ -173,7 +173,7 @@ def main():
 
         end_time = time.strftime("%H:%M:%S %p", time.localtime())
 
-        print(f'Successfull loading of {name} TEST. Starttime: {start_time}. Endtime: {end_time}. Difference: {end_time - start_time}')
+        print(f'Successfull loading of {name} TEST. Starttime: {start_time}. Endtime: {end_time}')
 
 
         dest_path = '/home/simon/TSER/preparedData/'
