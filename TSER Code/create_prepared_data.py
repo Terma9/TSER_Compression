@@ -89,6 +89,8 @@ def load_and_prepare_everything(data_path: str, compression_type: str, compressi
     prep_data.columns = prep_data.columns.astype(str) #fwiz or flaml needs string as columns!
 
 
+    # Up to this point we finished with the flattened ts. Now we calculate the features.
+
     #data_x_p = data_x_p[0:2,...]
 
     num_datapoints = data_x_p.shape[0]
@@ -107,7 +109,7 @@ def load_and_prepare_everything(data_path: str, compression_type: str, compressi
             curr_ts = data_x_p[i,:,j]
 
             # Apply tsfeatures
-            #print(curr_ts.size)
+            # print(curr_ts.size)
             timeseries_df = pd.DataFrame({'unique_id' : np.ones(len_timeseries),'ds': np.arange(0,len_timeseries) , 'y': curr_ts})
             
             feature_array = tsfeatures(timeseries_df, freq=1).fillna(0).values
@@ -138,7 +140,7 @@ def load_and_prepare_everything(data_path: str, compression_type: str, compressi
     return ts_and_features, all_features
 
 
-
+# Changed to load only test of houshold and ieeeppg
 
 def main():
     # Don't overwrite stuff! Comment what is not needed!
@@ -146,10 +148,12 @@ def main():
     # For first Pipeline run
 
     data_names = [
-    
-        'FloodModeling1',
-        'AppliancesEnergy',
-        'Covid3Month',
+
+        'HouseholdPowerConsumption1',
+        'IEEEPPG'
+        #'FloodModeling1',
+        #'AppliancesEnergy',
+        #'Covid3Month',
         #'BeijingPM25Quality'
     ]
 
@@ -161,16 +165,22 @@ def main():
         data_train_path = source_path + name + "_TRAIN.ts"
         data_test_path = source_path + name + "_TEST.ts"
 
+      
+        start_time = time.strftime("%H:%M:%S %p", time.localtime())
 
-        train_data, train_features = load_and_prepare_everything(data_train_path, None, -1)
+        #train_data, train_features = load_and_prepare_everything(data_train_path, None, -1)
         test_data, test_features = load_and_prepare_everything(data_test_path, None, -1)
+
+        end_time = time.strftime("%H:%M:%S %p", time.localtime())
+
+        print(f'Successfull loading of {name} TEST. Starttime: {start_time}. Endtime: {end_time}. Difference: {end_time - start_time}')
+
 
         dest_path = '/home/simon/TSER/preparedData/'
 
 
-
-        train_data.to_csv(dest_path + name + "_TRAIN" + "_None_" +'_ts_and_features.csv', index=False)
-        train_features.to_csv(dest_path + name + "_TRAIN" + "_None_" + '_features.csv', index=False)
+        #train_data.to_csv(dest_path + name + "_TRAIN" + "_None_" +'_ts_and_features.csv', index=False)
+        #train_features.to_csv(dest_path + name + "_TRAIN" + "_None_" + '_features.csv', index=False)
 
         test_data.to_csv(dest_path + name + "_TEST" + "_None_" + '_ts_and_features.csv', index=False)
         test_features.to_csv(dest_path + name + "_TEST" +"_None_" + '_features.csv', index=False)
@@ -194,16 +204,11 @@ def main():
 
 
 
-
-    print("successfull loading")
-
-
 def print_progress():
     while True:
         current_time = time.localtime()
         formatted_time = time.strftime("%H:%M:%S %p", current_time)
-        print("Program is still running...")
-        print("Current Time =", formatted_time)
+        print("Program is still running. Current Time:", formatted_time)
         time.sleep(300)
 
 

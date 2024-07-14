@@ -89,6 +89,9 @@ def load_and_prepare_everything(data_path: str, compression_type: str, compressi
     prep_data.columns = prep_data.columns.astype(str) #fwiz or flaml needs string as columns!
 
 
+    # Up to this point we finished with the flattened ts. Now we calculate the features.
+
+
     #data_x_p = data_x_p[0:2,...]
 
     num_datapoints = data_x_p.shape[0]
