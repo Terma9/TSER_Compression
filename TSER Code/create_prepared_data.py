@@ -112,7 +112,7 @@ def load_and_prepare_everything(data_path: str, compression_type: str, compressi
             # print(curr_ts.size)
             timeseries_df = pd.DataFrame({'unique_id' : np.ones(len_timeseries),'ds': np.arange(0,len_timeseries) , 'y': curr_ts})
             
-            feature_array = tsfeatures(timeseries_df, freq=1, threads=5).fillna(0).values
+            feature_array = tsfeatures(timeseries_df, freq=1, threads=500).fillna(0).values
 
             #print(feature_array.size)
             #print(np.isnan(feature_array).sum())
