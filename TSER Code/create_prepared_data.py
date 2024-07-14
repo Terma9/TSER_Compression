@@ -175,15 +175,14 @@ def main():
         start_time = time.strftime("%H:%M:%S %p", time.localtime())
         test_data, test_features = load_and_prepare_everything(data_test_path, None, -1)
         end_time = time.strftime("%H:%M:%S %p", time.localtime())
-
         print(f'Successfull loading of {name} TEST. Starttime: {start_time}. Endtime: {end_time}')
 
 
         dest_path = '/home/simon/TSER/preparedData/'
 
 
-        #train_data.to_csv(dest_path + name + "_TRAIN" + "_None_" +'_ts_and_features.csv', index=False)
-        #train_features.to_csv(dest_path + name + "_TRAIN" + "_None_" + '_features.csv', index=False)
+        train_data.to_csv(dest_path + name + "_TRAIN" + "_None_" +'_ts_and_features.csv', index=False)
+        train_features.to_csv(dest_path + name + "_TRAIN" + "_None_" + '_features.csv', index=False)
 
         test_data.to_csv(dest_path + name + "_TEST" + "_None_" + '_ts_and_features.csv', index=False)
         test_features.to_csv(dest_path + name + "_TEST" +"_None_" + '_features.csv', index=False)
