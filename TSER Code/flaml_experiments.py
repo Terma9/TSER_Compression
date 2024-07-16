@@ -78,7 +78,7 @@ def testrun_dct():
         for i in [0.5,0.75,0.85,0.95,0.99]:
             source_path = path + ds_name + '_TRAIN' + '_dct' + f'_{i}' + '_ts_and_features.csv'
 
-            rmse = run_flaml(source_path, f'{ds_name} dct test run', f'NONE {ds_name} dct 15min Flaml tsf', 15 * 60)
+            rmse = run_flaml(source_path, f'{ds_name} dct test run', f'{i} {ds_name} dct 15min Flaml tsf', 15 * 60)
 
             rmse_values.append(rmse)
 

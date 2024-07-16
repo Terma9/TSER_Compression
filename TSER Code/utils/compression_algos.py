@@ -1,6 +1,6 @@
 import pandas as pd
 import numpy as np
-
+from scipy.optimize import linprog
 from scipy.fft import dct, idct, fft, ifft
 import pywt
 
@@ -263,3 +263,108 @@ def cpt_compress(signal, dropout_ratio, andDecompress:bool):
         decompressed_signal_norm = chebval(t, cpt_coeffs)
         decompressed_signal = inverse_min_max_normalize_np(decompressed_signal_norm, np.min(signal), np.max(signal))
         return decompressed_signal """
+
+
+
+
+
+# PPA Subfuncitions
+
+
+
+
+
+# PMR-Midrange for degree 0, returns the error and the approximation
+# maybe adapt to return only one number instead of signal
+
+def pmr_midrange(signal):
+
+    min_val = np.min(signal)
+    max_val = np.max(signal)
+    midrange_value = (min_val + max_val) / 2
+    pmr_signal = np.full_like(signal, midrange_value)
+    
+
+    # Calculate the error
+    error = np.abs(signal - pmr_signal)
+
+    # Compute the uniform norm of the error
+    uniform_norm_error = np.max(error)
+
+    return uniform_norm_error, pmr_signal
+
+    
+
+
+
+
+# Handles everything up from degree one
+def approx_deg_p(signal, degree):
+
+
+    # will later see how to handle it with index, what exactly is saved in signal! IMPORTANT
+
+
+    x = np.arange(signal.size)
+    y = signal  
+
+    # Degree of the polynomial 
+    degree
+
+    # Number of data points
+    n = len(x)
+
+    # Coefficients for the linear programming problem
+    # There will be degree + 1 coefficients for the polynomial plus one for the error term
+    c = np.zeros(degree + 2)
+    c[-1] = 1  # Coefficient for the error term
+
+    # Inequality constraints
+    A_ub = []
+    b_ub = []
+
+
+    # Look at photo for calculations and rearrangements!
+    for i in range(n):
+        row_pos = []
+        row_neg = []
+        for j in range(degree + 1):
+            row_pos.append(x[i]**j)
+            row_neg.append(-x[i]**j)
+        
+        row_pos.append(-1)  # -t term
+        row_neg.append(-1)  # -t term
+        
+        A_ub.append(row_pos)  # f(x_i) - g(x_i) <= t
+        b_ub.append(y[i])
+        
+        A_ub.append(row_neg)  # g(x_i) - f(x_i) <= t
+        b_ub.append(-y[i])
+
+    A_ub = np.array(A_ub)
+    b_ub = np.array(b_ub)
+
+    # Bounds for the variables
+    bounds = [(None, None)] * (degree + 1) + [(0, None)]  # No bounds on polynomial coefficients, t >= 0
+
+    # Solve the linear programming problem
+    result = linprog(c, A_ub=A_ub, b_ub=b_ub, bounds=bounds, method='highs')
+
+    # Check if the optimization was successful
+    if result.success:
+        # Extract the solution
+        coeffs = result.x[:-1]  # The polynomial coefficients
+        min_error = result.x[-1]  # The minimum error t
+        #print(f"Optimal polynomial coefficients: {coeffs}")
+        #print(f"Minimum error t: {min_error}")
+
+        return min_error, coeffs
+    
+    else:
+        print("Optimization failed.")
+        print(f"Status: {result.status}")
+        print(f"Message: {result.message}")
+    
+
+
+
