@@ -65,7 +65,7 @@ def testrun_dct():
     comp_ratios = []
 
     # First run with no compression. I take Compression Ratio one!
-    ds_names = ['HouseholdPowerConsumption1', 'FloodModeling1', 'Covid3Month']
+    ds_names = ['HouseholdPowerConsumption1', 'FloodModeling1', 'Covid3Month', 'IEEEPPG']
 
     for ds_name in ds_names:
     
