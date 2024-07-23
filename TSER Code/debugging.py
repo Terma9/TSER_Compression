@@ -29,15 +29,15 @@ warnings.filterwarnings("ignore", category=RuntimeWarning)
 
 
 paths = {
-    'AppliancesEnergy':   '/home/sim/Desktop/TS Extrinsic Regression/data/AppliancesEnergy_TRAIN.ts',
-    'BeijingPM25Quality': '/home/sim/Desktop/TS Extrinsic Regression/data/BeijingPM25Quality_TRAIN.ts',
-    'IEEEPPG':            '/home/sim/Desktop/TS Extrinsic Regression/data/IEEEPPG_TRAIN.ts',
-    'NewsTitleSentiment': '/home/sim/Desktop/TS Extrinsic Regression/data/NewsTitleSentiment_TRAIN.ts',
-    'Covid3Month':        '/home/sim/Desktop/TS Extrinsic Regression/data/Covid3Month_TRAIN.ts',
+    'AppliancesEnergy':   '/home/simon/TSER/Time_Series_Data/AppliancesEnergy_TRAIN.ts',
+    'BeijingPM25Quality': '/home/simon/TSER/Time_Series_Data/BeijingPM25Quality_TRAIN.ts',
+    'IEEEPPG':            '/home/simon/TSER/Time_Series_Data/IEEEPPG_TRAIN.ts',
+    'NewsTitleSentiment': '/home/simon/TSER/Time_Series_Data/NewsTitleSentiment_TRAIN.ts',
+    'Covid3Month':        '/home/simon/TSER/Time_Series_Data/Covid3Month_TRAIN.ts',
 
-    'BenzeneConcentration':       '/home/sim/Desktop/TS Extrinsic Regression/data/BenzeneConcentration_TRAIN.ts',
-    'FloodModeling1':             '/home/sim/Desktop/TS Extrinsic Regression/data/FloodModeling1_TRAIN.ts',
-    'HouseholdPowerConsumption1': '/home/sim/Desktop/TS Extrinsic Regression/data/HouseholdPowerConsumption1_TRAIN.ts'
+    'BenzeneConcentration':       '/home/simon/TSER/Time_Series_Data/BenzeneConcentration_TRAIN.ts',
+    'FloodModeling1':             '/home/simon/TSER/Time_Series_Data/FloodModeling1_TRAIN.ts',
+    'HouseholdPowerConsumption1': '/home/simon/TSER/Time_Series_Data/HouseholdPowerConsumption1_TRAIN.ts'
 }
 
 for dataset_id, data_path in paths.items():
