@@ -17,7 +17,7 @@ def load_dataset(data_path, norm = "standard"):
         min_len = min(min(all_len), min_len)
 
     data_x_p = process_data(data_x, normalise='standard', min_len=min_len)
-    return(data_x_p)
+    return data_x_p, data_y
 
 
 

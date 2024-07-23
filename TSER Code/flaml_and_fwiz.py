@@ -125,7 +125,7 @@ def run_flaml(source_path_train, experiment_name, run_name, time):
         # Log the error metrics that were calculated during validation
         mlflow.log_metrics(metrics)
 
-    
+
     # item() because it is a NDArray[Any]
     return rmse.item()
 
