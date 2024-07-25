@@ -78,6 +78,17 @@ def run_flaml(source_path_train, experiment_name, run_name, time):
     }
 
     automl = AutoML()
+
+
+        #Ml-Flow Run Nam
+
+    # Log with ml flow
+    with mlflow.start_run(run_name=run_name) as run:
+
+
+
+
+
     # for only flaml
     #automl.fit(X_train= train_data.drop(columns=['target']), y_train = train_data['target'], **automl_settings)
     automl.fit(X_train= train_data_fw, y_train = train_data['target'], **automl_settings)

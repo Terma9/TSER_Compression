@@ -1,3 +1,9 @@
+import os, socket
+
+if socket.gethostname() != "sim-IdeaPad-5-14ALC05":
+    for var in ["OMP_NUM_THREADS", "OPENBLAS_NUM_THREADS", "MKL_NUM_THREADS", "VECLIB_MAXIMUM_THREADS", "NUMEXPR_NUM_THREADS"]:
+        os.environ[var] = "40" 
+
 import argparse
 import pandas as pd 
 import numpy as np

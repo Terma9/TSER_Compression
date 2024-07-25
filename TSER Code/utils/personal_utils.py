@@ -25,6 +25,57 @@ def load_dataset(data_path, norm = "standard"):
 
 
 
+# Compute MAPE's
+
+
+# MAPE, only divding when true value not zero or the value very very small. We just ignore value where we would divide by 0
+def mape(y_true, y_pred):
+    y_true, y_pred = np.array(y_true), np.array(y_pred)
+
+    #Avoid division by zero
+    non_zero_elements = np.abs(y_true) != 0       #> 1e-10  # Consider very small values as zero
+    return np.mean(np.abs((y_true[non_zero_elements] - y_pred[non_zero_elements]) / y_true[non_zero_elements])) * 100
+
+
+#SMAPE, not included the *2 so that it is on scale 0-100%
+def smape(y_true, y_pred):
+    y_true, y_pred = np.array(y_true), np.array(y_pred)
+
+    denominator = np.abs(y_true) + np.abs(y_pred)
+    non_zero_elements = denominator != 0
+    return np.mean(np.abs(y_true[non_zero_elements] - y_pred[non_zero_elements]) / denominator[non_zero_elements]) * 100
+
+
+
+
+
+# Modified SMAPE
+
+def msmape(y_true, y_pred, epsilon=1e-4):
+    y_true, y_pred = np.array(y_true), np.array(y_pred)
+
+    denominator = np.abs(y_true) + np.abs(y_pred) + epsilon
+    non_zero_elements = denominator != 0 # impossible, as long as epsilon not zero
+    return np.mean(np.abs(y_true[non_zero_elements] - y_pred[non_zero_elements]) / denominator[non_zero_elements]) * 100
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 def compute_rmse(array1, array2):
     # Ensure the arrays have the same length
