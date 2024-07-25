@@ -5,7 +5,7 @@ if socket.gethostname() != "sim-IdeaPad-5-14ALC05":
         os.environ[var] = "40" 
 
 
-from flaml_and_fwiztest_no_outputfile import *
+from flaml_and_fwiztest import *
 
 import pandas as pd
 import numpy as np
@@ -50,7 +50,7 @@ paths = {
 }
 
 
-run_flaml('/home/simon/TSER/Time_Series_Data/AppliancesEnergy_TRAIN.ts','Test1', 'run1', 10)
+run_flaml('/home/simon/TSER/Covid3Month_TRAIN_features.csv','Test2', 'run4', 10)
 
 
 
