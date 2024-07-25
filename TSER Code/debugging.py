@@ -5,6 +5,7 @@ if socket.gethostname() != "sim-IdeaPad-5-14ALC05":
         os.environ[var] = "40" 
 
 
+from flaml_and_fwiztest import *
 
 import pandas as pd
 import numpy as np
@@ -48,47 +49,8 @@ paths = {
     'HouseholdPowerConsumption1': '/home/simon/TSER/Time_Series_Data/HouseholdPowerConsumption1_TRAIN.ts'
 }
 
-for dataset_id, data_path in paths.items():
-    dataset_array, data_y = load_dataset(data_path)
-    dataset_id = os.path.basename(data_path).split('_')[0]
 
-
-
-    num_dp, len_ts, num_dim = dataset_array.shape
-
-    # Create the ts-values per dimension and convert to df
-    array_flatdim = dataset_array.reshape(-1, num_dim).copy()
-    column_names_dim = [f"dim_{i+1}" for i in range(num_dim)]
-    dataset_df = pd.DataFrame(array_flatdim,columns=column_names_dim)
-
-    # Create the timesteps flattened
-    timesteps_flattened = np.tile(np.arange(len_ts), num_dp)
-
-
-    #Create the id for each datapoint/sample
-    ts_ids = [i for i in range(num_dp) for _ in range(len_ts)]
-
-    dataset_df.insert(0, 'timesteps', timesteps_flattened)
-    dataset_df.insert(0, 'ts_ids', ts_ids)
-
-
-    y_ids = [i+1 for i in range(num_dp)]
-
-    y_ser = pd.Series(data_y,index=y_ids)
-
-
-    extracted = extract_features(timeseries_container=dataset_df,column_id='ts_ids',column_sort="timesteps", default_fc_parameters=EfficientFCParameters())
-    impute(extracted)
-
-    print(dataset_id)
-
-    print(f'SHAPE EXTRACTED {extracted.shape}')
-
-    sf = select_features(extracted, y_ser, ml_task='regression')
-
-    print(f'SHAPE SELECTED {sf.shape}')
-
-
+run_flaml('/home/simon/TSER/Time_Series_Data/AppliancesEnergy_TRAIN.ts','Test1', 'run1', 10)
 
 
 

@@ -29,7 +29,7 @@ def load_dataset(data_path, norm = "standard"):
 
 
 # MAPE, only divding when true value not zero or the value very very small. We just ignore value where we would divide by 0
-def mape(y_true, y_pred):
+def get_mape(y_true, y_pred):
     y_true, y_pred = np.array(y_true), np.array(y_pred)
 
     #Avoid division by zero
@@ -38,7 +38,7 @@ def mape(y_true, y_pred):
 
 
 #SMAPE, not included the *2 so that it is on scale 0-100%
-def smape(y_true, y_pred):
+def get_smape(y_true, y_pred):
     y_true, y_pred = np.array(y_true), np.array(y_pred)
 
     denominator = np.abs(y_true) + np.abs(y_pred)
@@ -51,7 +51,7 @@ def smape(y_true, y_pred):
 
 # Modified SMAPE
 
-def msmape(y_true, y_pred, epsilon=1e-4):
+def get_msmape(y_true, y_pred, epsilon=1e-4):
     y_true, y_pred = np.array(y_true), np.array(y_pred)
 
     denominator = np.abs(y_true) + np.abs(y_pred) + epsilon
@@ -239,3 +239,47 @@ def load_datapoint(data_path, datapoint = 0, norm = None):
         min_len = min(min(all_len), min_len)
     data_x_p = process_data(data_x, normalise= norm, min_len=min_len)
     return(data_x_p[datapoint,:,:])
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# Other utils
+
+class Tee(object):
+    def __init__(self, *files):
+        self.files = files
+
+    def write(self, obj):
+        for f in self.files:
+            f.write(obj)
+            f.flush()  
+
+    def flush(self):
+        for f in self.files:
+            f.flush()
+
