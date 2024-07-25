@@ -36,6 +36,8 @@ warnings.filterwarnings("ignore")
 warnings.filterwarnings("ignore", category=RuntimeWarning)
 
 
+path_server = '/home/simon/TSER/preparedData/Covid3Month_TRAIN_features.csv'
+
 
 paths = {
     'AppliancesEnergy':   '/home/simon/TSER/Time_Series_Data/AppliancesEnergy_TRAIN.ts',
@@ -50,7 +52,7 @@ paths = {
 }
 
 
-run_flaml('/home/simon/TSER/Covid3Month_TRAIN_features.csv','Test2', 'run4', 10)
+run_flaml('/home/simon/TSER/preparedData/Covid3Month_TRAIN_features.csv','Test2', 'run4', 10)
 
 
 
