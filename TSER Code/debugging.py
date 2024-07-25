@@ -5,7 +5,7 @@ if socket.gethostname() != "sim-IdeaPad-5-14ALC05":
         os.environ[var] = "40" 
 
 
-from flaml_and_fwiztest import *
+from flaml_and_fwiztest_no_outputfile import *
 
 import pandas as pd
 import numpy as np

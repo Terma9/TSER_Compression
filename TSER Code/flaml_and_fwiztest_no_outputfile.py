@@ -1,4 +1,4 @@
-import os, socket, shutil, sys
+import os, socket, shutil,
 from datetime import datetime
 
 if socket.gethostname() != "sim-IdeaPad-5-14ALC05":
