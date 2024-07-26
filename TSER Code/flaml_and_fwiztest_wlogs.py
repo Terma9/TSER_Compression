@@ -1,3 +1,6 @@
+## When everything runs nicely, add code to print sysout to an output file in the run directory
+
+
 import os, socket, shutil
 from datetime import datetime
 

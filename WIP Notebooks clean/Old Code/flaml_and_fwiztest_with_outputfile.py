@@ -1,3 +1,10 @@
+########
+# Prints the sysout simultaneously to a file and to the screen output! Doesn't work on server!
+
+
+
+
+
 import os, socket, shutil, sys
 from datetime import datetime
 

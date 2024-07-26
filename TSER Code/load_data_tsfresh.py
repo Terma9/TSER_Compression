@@ -4,8 +4,6 @@ if socket.gethostname() != "sim-IdeaPad-5-14ALC05":
     for var in ["OMP_NUM_THREADS", "OPENBLAS_NUM_THREADS", "MKL_NUM_THREADS", "VECLIB_MAXIMUM_THREADS", "NUMEXPR_NUM_THREADS"]:
         os.environ[var] = "40" 
 
-
-
 import pandas as pd
 import numpy as np
 
@@ -87,22 +85,3 @@ for dataset_id, data_path in paths.items():
     sf = select_features(extracted, y_ser, ml_task='regression')
 
     print(f'SHAPE SELECTED {sf.shape}')
-
-
-
-
-
-
-#for i in np.arange(0, 1.04, 0.04):
-#   decompressed_dataset = compress_dataset(dataset_array.copy(), dataset_id, True, "dct", i) 
-#    print(compute_avg_rmse_of_dataset(dataset_array, decompressed_dataset))
-#dataset_array = np.random.randint(0, 10, size=(3, 10, 3))
-
-
-
-#for i in np.arange(0, 1.04, 0.04):
-#    decompressed_dataset = compress_dataset(dataset_array.copy(), dataset_id, False, "cpt", i) 
-#    print("drop_out value: ",round(i,2),"comp_ratio", calculateCompRatio(dataset_array, decompressed_dataset))
-#    print("drop_out value: ",round(i,2),"comp_ratio", calculateCompRatio(dataset_array, decompressed_dataset))
-
-    #print(calculateCompRatio(decompressed_dataset, np.zeros((42,144,24)),True))
