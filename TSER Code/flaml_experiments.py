@@ -25,7 +25,7 @@ ds_name = 'AppliancesEnergy'
 
 def tsf_or_f():
 
-    ds_names = ['FloodModeling1', 'Covid3Month', 'AppliancesEnergy']
+    ds_names = ['FloodModeling1', 'HousholdPowerConsumption1', 'AppliancesEnergy']
 
     for ds_name in ds_names:
 

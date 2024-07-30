@@ -149,7 +149,7 @@ def main():
 
         #'AppliancesEnergy',
         #'FloodModeling1',
-        'HouseholdPowerConsumption1',
+        #'HouseholdPowerConsumption1',
         'BeijingPM25Quality',
 
         'IEEEPPG',  
@@ -196,6 +196,8 @@ def main():
 
         
         # Load extra 5 dct for testing in beginning!
+
+        continue
 
         for tq in ['dct','dft','dwt']:
             
