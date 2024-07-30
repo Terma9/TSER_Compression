@@ -146,9 +146,9 @@ def main():
 
 
     data_names = [
-        
-        'AppliancesEnergy',
-        'FloodModeling1',
+
+        #'AppliancesEnergy',
+        #'FloodModeling1',
         'HouseholdPowerConsumption1',
         'BeijingPM25Quality',
 
@@ -178,7 +178,7 @@ def main():
         start_time = time.strftime("%H:%M:%S %p", time.localtime())
         train_data, train_features = load_and_prepare_everything(data_train_path, None, -1)
         end_time = time.strftime("%H:%M:%S %p", time.localtime())
-        print(f'Successfull loading of {name} TEST. Starttime: {start_time}. Endtime: {end_time}')
+        print(f'Successfull loading of {name} TRAIN. Starttime: {start_time}. Endtime: {end_time}')
 
 
         start_time = time.strftime("%H:%M:%S %p", time.localtime())
@@ -198,6 +198,11 @@ def main():
         # Load extra 5 dct for testing in beginning!
 
         for tq in ['dct','dft','dwt']:
+            
+            if name == 'HouseholdPowerConsumption1' and tq == 'dct':
+                continue
+
+            
 
         
             for i in [0.5,0.75,0.85,0.9,0.95,0.97,0.99]:
