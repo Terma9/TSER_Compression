@@ -9,13 +9,10 @@ dataset_params = {
     'BeijingPM25Quality':        {'block_size': 1008, 'num_dim': 9, 'len_ts': 24},
     'IEEEPPG':                   {'block_size': 1000, 'num_dim': 5, 'len_ts': 1000},
     'FloodModeling1':           {'block_size': 1064, 'num_dim': 1, 'len_ts': 266},
-    'Covid3Month':               {'block_size': 1008, 'num_dim': 1, 'len_ts': 84},
 
 
 
-
-
-    # Backup Datasets if other ones give bad results.
+    'Covid3Month':               {'block_size': 1008, 'num_dim': 1, 'len_ts': 84}, 
     'BenzeneConcentration':      {'block_size': 960, 'num_dim': 8, 'len_ts': 240},
     'NewsTitleSentiment':        {'block_size': 1008, 'num_dim': 3, 'len_ts': 144},
     'HouseholdPowerConsumption1':{'block_size': 1440, 'num_dim': 5, 'len_ts': 1440},
@@ -48,14 +45,30 @@ def compress_dataset(dataset_array, dataset_id, andDecompress:bool, compression_
        array_flatdim = array_flatdim.astype(np.complex128)
 
 
-    # Change wavelet to haar, for last 2 Datasets
-    if dataset_id == "FloodModeling1" or dataset_id == "Covid3Month":
+    # Change wavelet after studies
+    if dataset_id in ["FloodModeling1", "Covid3Month", "HouseholdPowerConsumption", "NewsTitleSentiment"]:
         wavelet = "haar"
+    else:
+        wavelet = "db4"
+
+    
+    if dataset_id == "NewsTitleSentiment":
+        level = 1
+    else: 
+        level = pywt.dwt_max_level(dataset_params[dataset_id]['block_size'], wavelet)
+
+
+    # Change Quantisation level after studies: Level 1 if below 0.9 dropout. Level 1 for higher than 0.9 dropout.
+    if compression_param <= 0.9:
+        quantization_level = 1
+    else:
+        quantization_level = 0
+
 
 
     # 0 is best quantization level for dct! for the others I don't know!
-    if compression_type == 'dct':
-        quantization_level = 0
+    #if compression_type == 'dct':
+    #    quantization_level = 0
 
 
     # Length of all the time series in one dimension -> Assumption, all dimensions have the same length

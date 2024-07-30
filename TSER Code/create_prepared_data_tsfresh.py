@@ -141,14 +141,23 @@ def main():
 
     # For first Pipeline run
 
-    data_names = [
 
-        'HouseholdPowerConsumption1',
-        'IEEEPPG',
+    # TO-DO - Add new Datasets, add naming, save in same folder, move old folder somewhere else!
+
+
+    data_names = [
+        
+        'AppliancesEnergy',
         'FloodModeling1',
-        #'AppliancesEnergy',
+        'HouseholdPowerConsumption1',
+        'BeijingPM25Quality',
+
+        'IEEEPPG',  
         'Covid3Month',
-        #'BeijingPM25Quality'
+        'BenzeneConcentration',
+        'NewsTitleSentiment',
+        
+
     ]
 
     source_path = '/home/simon/TSER/Time_Series_Data/'
@@ -165,7 +174,7 @@ def main():
         data_train_path = source_path + name + "_TRAIN.ts"
         data_test_path = source_path + name + "_TEST.ts"
 
-        """"
+        
         start_time = time.strftime("%H:%M:%S %p", time.localtime())
         train_data, train_features = load_and_prepare_everything(data_train_path, None, -1)
         end_time = time.strftime("%H:%M:%S %p", time.localtime())
@@ -185,32 +194,33 @@ def main():
         test_data.to_csv(dest_path + name + "_TEST" + "_None_" + '_ts_and_features.csv', index=False)
         test_features.to_csv(dest_path + name + "_TEST" +"_None_" + '_features.csv', index=False)
 
-        """
-         
-
-        # Load extra 5 dct for testing in beginning!
         
-        for i in [0.5,0.75,0.85,0.95,0.99]:
+        # Load extra 5 dct for testing in beginning!
 
-            start_time = time.strftime("%H:%M:%S %p", time.localtime())
-            train_data, train_features = load_and_prepare_everything(data_train_path, 'dct', i)
-            end_time = time.strftime("%H:%M:%S %p", time.localtime())
-            print(f'Successfull loading of {name} {i} dct TRAIN. Starttime: {start_time}. Endtime: {end_time}')
+        for tq in ['dct','dft','dwt']:
 
+        
+            for i in [0.5,0.75,0.85,0.9,0.95,0.97,0.99]:
 
-            start_time = time.strftime("%H:%M:%S %p", time.localtime())
-            test_data, test_features = load_and_prepare_everything(data_test_path, 'dct', i)
-            end_time = time.strftime("%H:%M:%S %p", time.localtime())
-            print(f'Successfull loading of {name} {i} dct TEST. Starttime: {start_time}. Endtime: {end_time}')
-
+                start_time = time.strftime("%H:%M:%S %p", time.localtime())
+                train_data, train_features = load_and_prepare_everything(data_train_path, tq, i)
+                end_time = time.strftime("%H:%M:%S %p", time.localtime())
+                print(f'Successfull loading of {name} {i} {tq} TRAIN. Starttime: {start_time}. Endtime: {end_time}')
 
 
+                start_time = time.strftime("%H:%M:%S %p", time.localtime())
+                test_data, test_features = load_and_prepare_everything(data_test_path, tq, i)
+                end_time = time.strftime("%H:%M:%S %p", time.localtime())
+                print(f'Successfull loading of {name} {i} {tq} TEST. Starttime: {start_time}. Endtime: {end_time}')
 
-            train_data.to_csv(dest_path + name + "_TRAIN" + "_dct_" + str(i) + '_ts_and_features.csv', index=False)
-            train_features.to_csv(dest_path + name + "_TRAIN" + "_dct_" + str(i) + '_features.csv', index=False)
 
-            test_data.to_csv(dest_path + name +"_TEST" + "_dct_" + str(i) + '_ts_and_features.csv', index=False)
-            test_features.to_csv(dest_path + name +"_TEST" + "_dct_" + str(i) + '_features.csv', index=False)
+
+
+                train_data.to_csv(dest_path + name + "_TRAIN" + f"_{tq}_" + str(i) + '_ts_and_features.csv', index=False)
+                train_features.to_csv(dest_path + name + "_TRAIN" + f"_{tq}_" + str(i) + '_features.csv', index=False)
+
+                test_data.to_csv(dest_path + name +"_TEST" + f"_{tq}_" + str(i) + '_ts_and_features.csv', index=False)
+                test_features.to_csv(dest_path + name +"_TEST" + f"_{tq}_" + str(i) + '_features.csv', index=False)
 
 
 
