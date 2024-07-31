@@ -1,5 +1,6 @@
 ########### 
 ######## When everything runs nicely, add code to print sysout to an output file in the run directory
+##### Also no logging of Datasets bc no space!
 
 
 import os, socket
@@ -170,8 +171,8 @@ def run_flaml(source_path_train, experiment_name, run_name, time):
 
 
     # Save Starting Datasets
-    train_data.to_csv(os.path.join(run_path, 'train_data.csv'), index=False)
-    test_data.to_csv(os.path.join(run_path, 'test_data.csv'), index=False)
+    #train_data.to_csv(os.path.join(run_path, 'train_data.csv'), index=False)
+    #test_data.to_csv(os.path.join(run_path, 'test_data.csv'), index=False)
 
     # Save Selected Features
     with open(os.path.join(run_path, 'selected_features.txt'), 'w') as file:

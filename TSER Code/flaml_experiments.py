@@ -19,17 +19,24 @@ path_ts = '/home/simon/TSER/Time_Series_Data/'
 # For Agluon change all occurences
 # For new Dataset, change ds_name
 # Maybe add parameter option to do all test at once! -> delete before that the old experiments!
-ds_name = 'AppliancesEnergy'
-
-
 
 def tsf_or_f():
 
-    ds_names = ['FloodModeling1', 'HousholdPowerConsumption1', 'AppliancesEnergy']
+    ds_names = [
+    'AppliancesEnergy',
+    'NewsTitleSentiment',
+    'BenzeneConcentration',
+    'BeijingPM25Quality',
+    'IEEEPPG',
+    'FloodModeling1',
+    'HouseholdPowerConsumption1',
+    'Covid3Month'
+    ]
+
 
     for ds_name in ds_names:
 
-        for time in [15, 30]:
+        for time in [15]:
             source_path_tsf = path + ds_name + '_TRAIN_None__ts_and_features.csv'
             source_path_f = path + ds_name + '_TRAIN_None__features.csv'
 
@@ -37,20 +44,30 @@ def tsf_or_f():
             run_flaml(source_path_f, 'Test if tsf or f', f'f {ds_name} Flaml {time}min', time * 60)
 
 
-
 def best_time():
     # Letting run only with features
-    
-    ds_names = ['FloodModeling1', 'Covid3Month', 'AppliancesEnergy']
+
+    ds_names = [
+    'AppliancesEnergy',
+    'NewsTitleSentiment',
+    'BenzeneConcentration',
+    'BeijingPM25Quality',
+    'IEEEPPG',
+    'FloodModeling1',
+    'HouseholdPowerConsumption1',
+    'Covid3Month'
+    ]
+
     times = [1 ,5, 15, 20, 25, 30, 60]
 
     for ds_name in ds_names:
 
-        source_path = path + ds_name + '_TRAIN_None__ts_and_features.csv'
+        source_path = path + ds_name + '_TRAIN_None__features.csv'
 
 
         for time in times:
-            run_flaml(source_path, 'Test best runtime', f'{time}min {ds_name} Flaml tsf', time * 60)
+            run_flaml(source_path, 'Test best runtime', f'{time}min {ds_name} Flaml f', time * 60)
+
 
 
 
