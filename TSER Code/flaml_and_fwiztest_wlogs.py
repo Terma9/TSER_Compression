@@ -64,6 +64,13 @@ def run_flaml(source_path_train, experiment_name, run_name, time):
     test_y = test_data["target"].values
 
 
+    # Clean feature names
+    train_data.columns = [col.replace('"', '').replace('[', '').replace(']', '').replace('{', '').replace('}', '').replace(',', '') for col in train_data.columns]
+    test_data.columns =  [col.replace('"', '').replace('[', '').replace(']', '').replace('{', '').replace('}', '').replace(',', '') for col in test_data.columns]
+
+
+
+
 
     # Automated feature Selection 
     # no activated feature engg, takes too long, feature_engg='interactions'

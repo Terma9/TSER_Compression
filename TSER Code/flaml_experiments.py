@@ -8,7 +8,7 @@ if socket.gethostname() != "sim-IdeaPad-5-14ALC05":
 
 
 import argparse
-from flaml_and_fwiztest_wlogs import run_flaml
+from flaml_and_fwiztest_wlogsnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn   import run_flaml
 from utils.personal_utils import *
 
 path = '/home/simon/TSER/preparedData/'
