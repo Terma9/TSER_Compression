@@ -26,7 +26,7 @@ from utils.personal_utils import *
 # '/home/simon/TSER/Covid3Month_TRAIN_features.csv'
 
 
-def run_flaml(source_path_train, experiment_name, run_name, time, train_data, test_data):
+def run_flaml(experiment_name, run_name, time, train_data, test_data):
 
 
 
@@ -138,7 +138,9 @@ def run_flaml(source_path_train, experiment_name, run_name, time, train_data, te
     # Start Logging
     # Update param dictionary with new parameters
     automl_settings.pop('log_file_name')
-    automl_settings["Source-Dataset"] = source_path_train
+
+    #automl_settings["Source-Dataset"] = source_path_train
+
     automl_settings["Experiment"] = experiment_name
     automl_settings["Run"] = run_name
 
@@ -184,6 +186,11 @@ def run_flaml(source_path_train, experiment_name, run_name, time, train_data, te
     #train_data.to_csv(os.path.join(run_path, 'train_data.csv'), index=False)
     #test_data.to_csv(os.path.join(run_path, 'test_data.csv'), index=False)
 
+
+    np.save(os.path.join(run_path, 'train_dataset.npy'), train_data)
+    np.save(os.path.join(run_path, 'test_dataset.npy'), test_data)
+
+
     # Save Selected Features
     with open(os.path.join(run_path, 'selected_features.txt'), 'w') as file:
         for feature in selected_features:
@@ -200,13 +207,13 @@ def run_flaml(source_path_train, experiment_name, run_name, time, train_data, te
 
 
 
-    return rmse.item()
+    return predictions
 
 
-
+# outdated
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Run FLAML with specified parameters.")
-    parser.add_argument("source_path_train", type=str, help="Path to the source CSV file")
+    #parser.add_argument("source_path_train", type=str, help="Path to the source CSV file")
     parser.add_argument("experiment_name", type=str, help="Name of the MLflow experiment")
     parser.add_argument("run_name", type=str, help="Name of the MLflow run")
     parser.add_argument("time", type=int, help="Time budget for FLAML in seconds")
