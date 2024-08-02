@@ -26,7 +26,7 @@ from utils.personal_utils import *
 # '/home/simon/TSER/Covid3Month_TRAIN_features.csv'
 
 
-def run_flaml(source_path_train, experiment_name, run_name, time, train_data, test_data):
+def run_flaml(source_path_train, experiment_name, run_name, time):
 
 
 
@@ -59,10 +59,8 @@ def run_flaml(source_path_train, experiment_name, run_name, time, train_data, te
 
 
     #Load already prepared data
-    #train_data = pd.read_csv(source_path_train)
-    #test_data = pd.read_csv(source_path_train.replace('TRAIN', 'TEST'))
-
-
+    train_data = pd.read_csv(source_path_train)
+    test_data = pd.read_csv(source_path_train.replace('TRAIN', 'TEST'))
     test_y = test_data["target"].values
 
 

@@ -9,7 +9,10 @@ if socket.gethostname() != "sim-IdeaPad-5-14ALC05":
 
 import argparse
 from flaml_and_fwiztest_wlogs import run_flaml
+
 from utils.personal_utils import *
+
+from create_prepared_data_tsfresh import *
 
 path = '/home/simon/TSER/preparedData/'
 
@@ -79,76 +82,61 @@ def test_deterministic():
 
 
 
-
-# I assume only f, 15min -> maybe change later
-
-
-# Do the runs, put on mlflow
-# Then calculte comp_ratios and save it as array -> transfer back, from that I can do bar chart!
-
-
-# Workaround to create charts: return the two y values, from that i can calculate all the metrics
-# Calculate comp_ratio by yourself!
-
-
 def run_dataset():
 
-
-
-
-    # First run with no compression. I take Compression Ratio one!
-    ds_names = ['AppliancesEnergy','HouseholdPowerConsumption1', 'FloodModeling1',]
-
+    ds_names = [
+    'AppliancesEnergy',
+    'NewsTitleSentiment',
+    'BenzeneConcentration',
+    'BeijingPM25Quality',
+    'IEEEPPG',
+    'FloodModeling1',
+    'HouseholdPowerConsumption1',
+    'Covid3Month'
+    ]
 
 
     # Create folder to save the outputs
     current_directory = os.getcwd()
     parent_directory = os.path.dirname(current_directory)
-    folder_path = os.path.join(parent_directory, 'Output_Runs')
+    folder_path = os.path.join(parent_directory, 'PredictionsAllDatasets')
     if not os.path.exists(folder_path):
         os.makedirs(folder_path)
 
 
-
     for ds_name in ds_names:
-
         #!! I add each solution and overwrite in case
         ds_path = os.path.join(folder_path, ds_name)
         if not os.path.exists(ds_path):
             os.makedirs(ds_path)
 
-        
 
-        source_path = path + ds_name + '_TRAIN_None__features.csv'
-        y_and_prediction_none = run_flaml(source_path, f'{ds_name} Runs ', f'NONE {ds_name} 15min Flaml f', 15 * 60)
+        data_train_path = path_ts + ds_name + "_TRAIN.ts"
+        data_test_path = path_ts + ds_name + "_TEST.ts"
+
+        train_data, train_features = load_and_prepare_everything(data_train_path, None, -1)
+        test_data, test_features = load_and_prepare_everything(data_test_path, None, -1)
 
 
-    
+
+        y_prediction_none = run_flaml(f'{ds_name}_Runs ', f'NONE_{ds_name}_20min_Flaml_f', 20 * 60, train_features, test_features)
+        np.save(os.path.join(ds_path, f'NONE_{ds_name}_predictions.npy'), y_prediction_none)
+
 
         for tq in ['dct', 'dft', 'dwt']:
-
-            values = []
-            values.append(y_and_prediction_none)
-
             for i in [0.5, 0.75, 0.85, 0.9, 0.95, 0.97, 0.99]:
-                source_path = path + ds_name + '_TRAIN' + '_' + tq + f'_{i}' + '_features.csv'
 
-                y_and_prediction = run_flaml(source_path, f'{ds_name} Runs', f'{i} {ds_name} {tq} 15min Flaml f', 15 * 60)
+                
+                train_data, train_features = load_and_prepare_everything(data_train_path, tq, i)
+                test_data, test_features = load_and_prepare_everything(data_test_path, tq, i)
 
-                values.append(y_and_prediction)
-
-            
-            
-            
+                y_prediction = run_flaml(f'{ds_name}_Runs', f'{i}_{tq}_{ds_name}_20min_Flaml_f', 20 * 60, train_features, test_features)
+                np.save(os.path.join(ds_path, f'{i}_{tq}_{ds_name}_predictions.npy'), y_prediction)
 
 
 
-        # Maybe Change name when doing it finally for all datasets and tq -> will have 25 of those
-        # adapt name properly of npz data
 
 
-
-        np.savez(ds_name + ' dct ' + 'rsme_compRatio.npz', rmse_values=np.array(rmse_values), comp_ratios=np.array(comp_ratios))
 
 
 if __name__ == "__main__":

@@ -58,8 +58,8 @@ def compress_dataset(dataset_array, dataset_id, andDecompress:bool, compression_
         level = pywt.dwt_max_level(dataset_params[dataset_id]['block_size'], wavelet)
 
 
-    # Change Quantisation level after studies: Level 1 if below 0.9 dropout. Level 1 for higher than 0.9 dropout.
-    if compression_param <= 0.9:
+    # Change Quantisation level after studies: Level 1 if below 0.95 dropout. Level 1 for higher than 0.9 dropout.
+    if compression_param <= 0.95:
         quantization_level = 1
     else:
         quantization_level = 0
