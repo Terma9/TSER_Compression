@@ -70,9 +70,9 @@ def run_flaml(experiment_name, run_name, time, train_data, test_data):
 
 
 
-    # Clean feature names
-    train_data.columns = [col.replace('"', '').replace('[', '').replace(']', '').replace('{', '').replace('}', '').replace(',', '') for col in train_data.columns]
-    test_data.columns =  [col.replace('"', '').replace('[', '').replace(']', '').replace('{', '').replace('}', '').replace(',', '') for col in test_data.columns]
+    # Clean feature names -> done alrady in loading it
+    #train_data.columns = [col.replace('"', '').replace('[', '').replace(']', '').replace('{', '').replace('}', '').replace(',', '') for col in train_data.columns]
+    #test_data.columns =  [col.replace('"', '').replace('[', '').replace(']', '').replace('{', '').replace('}', '').replace(',', '') for col in test_data.columns]
 
 
     # Automated feature Selection 

@@ -84,15 +84,20 @@ def test_deterministic():
 
 def run_dataset():
 
+    # Appliances fully loaded
+    # Newstitle only dct and half dft, other missing
+
+
     ds_names = [
-    'AppliancesEnergy',
-    'NewsTitleSentiment',
-    'BenzeneConcentration',
-    'BeijingPM25Quality',
-    'IEEEPPG',
+    #'AppliancesEnergy',
+    #'NewsTitleSentiment',
+
     'FloodModeling1',
     'HouseholdPowerConsumption1',
-    'Covid3Month'
+    'BenzeneConcentration',
+    'IEEEPPG',
+    'Covid3Month',
+    'BeijingPM25Quality',
     ]
 
 
@@ -119,7 +124,7 @@ def run_dataset():
 
 
 
-        y_prediction_none = run_flaml(f'{ds_name}_Runs ', f'NONE_{ds_name}_20min_Flaml_f', 20 * 60, train_features, test_features)
+        y_prediction_none = run_flaml(f'{ds_name}_Runs', f'NONE_{ds_name}_20min_Flaml_f', 20 * 60, train_features, test_features)
         np.save(os.path.join(ds_path, f'NONE_{ds_name}_predictions.npy'), y_prediction_none)
 
 

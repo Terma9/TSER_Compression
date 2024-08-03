@@ -128,7 +128,15 @@ def load_and_prepare_everything(data_path: str, compression_type: str, compressi
 
     extracted['target'] = data_y
 
+    # Remove JSON Strings
+    extracted.columns = [col.replace('"', '').replace('[', '').replace(']', '').replace('{', '').replace('}', '').replace(',', '') for col in extracted.columns]
+
+
+
     ts_and_features = pd.concat([prep_data, extracted], axis=1)
+
+
+
 
 
     return ts_and_features, extracted
