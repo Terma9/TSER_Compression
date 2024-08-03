@@ -187,8 +187,11 @@ def run_flaml(experiment_name, run_name, time, train_data, test_data):
     #test_data.to_csv(os.path.join(run_path, 'test_data.csv'), index=False)
 
 
-    np.save(os.path.join(run_path, 'train_dataset.npy'), train_data)
-    np.save(os.path.join(run_path, 'test_dataset.npy'), test_data)
+
+
+    #-> Still takes too much storage space -> IF needed can save it gzipped, then easy! But can always infer them from the .ts files!
+    #np.save(os.path.join(run_path, 'train_dataset.npy'), train_data)
+    #np.save(os.path.join(run_path, 'test_dataset.npy'), test_data)
 
 
     # Save Selected Features
