@@ -79,7 +79,7 @@ def run_flaml(experiment_name, run_name, time, train_data, test_data):
     # no activated feature engg, takes too long, feature_engg='interactions'
     fwiz = FeatureWiz(transform_target=True, verbose=2,) # see other parameters on doc
     train_data_fw , train_y_fw  = fwiz.fit_transform(train_data.drop(columns=['target']), train_data["target"])
-    # apply same learned feature transformations on test data _-> nothing with current params??
+    # apply same learned feature transformations on test data _-> nothing with current params?? -> Nah is very important! It cuts the selected Features from TRAIN on the TEST set! -> Maybe chec, if not do simply with test_data.drop(columns=['target'])[selected_features]
     test_data_fw = fwiz.transform(test_data.drop(columns=['target']))
 
     #Get list of selected features 

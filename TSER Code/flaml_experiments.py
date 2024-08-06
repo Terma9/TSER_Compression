@@ -89,14 +89,14 @@ def run_dataset():
 
 
     ds_names = [
-    #'AppliancesEnergy',
-    #'NewsTitleSentiment',
-    'HouseholdPowerConsumption1',
-    'BenzeneConcentration',
-    'IEEEPPG',
-    'FloodModeling1',
-    'Covid3Month',
-    'BeijingPM25Quality',
+    'NewsTitleSentiment',   
+    'AppliancesEnergy',
+    #'HouseholdPowerConsumption1',
+    #'BenzeneConcentration',
+    #'IEEEPPG',
+    #'FloodModeling1',
+    #'Covid3Month',
+    #'BeijingPM25Quality',
     ]
 
 

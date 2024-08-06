@@ -82,7 +82,7 @@ def load_and_prepare_everything(data_path: str, compression_type: str, compressi
 
 
     #Apply compression and decompression for approximated values.
-    if compression_type != None:
+    if compression_type != None and compression_param != None:
         data_x_p = compress_dataset(data_x_p, dataset_id, andDecompress=True, compression_type=compression_type, compression_param=compression_param)
 
     
@@ -103,7 +103,9 @@ def load_and_prepare_everything(data_path: str, compression_type: str, compressi
 
     num_dp, len_ts, num_dim = data_x_p.shape
 
-    # Create the ts-values per dimension and convert to df
+
+
+    # Create the ts-values per dimension and convert to df -> Later it still creates the features per single time series! -> 
     array_flatdim = data_x_p.reshape(-1, num_dim).copy()
     column_names_dim = [f"dim_{i+1}" for i in range(num_dim)]
     dataset_df = pd.DataFrame(array_flatdim,columns=column_names_dim)
