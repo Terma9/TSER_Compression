@@ -118,6 +118,8 @@ def run_dataset():
         data_train_path = path_ts + ds_name + "_TRAIN.ts"
         data_test_path = path_ts + ds_name + "_TEST.ts"
 
+
+        # -> Can get data directly by loading it from the parquet file!
         train_data, train_features = load_and_prepare_everything(data_train_path, None, -1)
         test_data, test_features = load_and_prepare_everything(data_test_path, None, -1)
 

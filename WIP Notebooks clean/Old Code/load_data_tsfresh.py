@@ -35,13 +35,13 @@ warnings.filterwarnings("ignore", category=RuntimeWarning)
 
 
 paths = {
-    #'AppliancesEnergy':   '/home/simon/TSER/Time_Series_Data/AppliancesEnergy_TRAIN.ts',
-    #'BeijingPM25Quality': '/home/simon/TSER/Time_Series_Data/BeijingPM25Quality_TRAIN.ts',
+    'AppliancesEnergy':   '/home/simon/TSER/Time_Series_Data/AppliancesEnergy_TRAIN.ts',
+    'BeijingPM25Quality': '/home/simon/TSER/Time_Series_Data/BeijingPM25Quality_TRAIN.ts',
     'IEEEPPG':            '/home/simon/TSER/Time_Series_Data/IEEEPPG_TRAIN.ts',
     'NewsTitleSentiment': '/home/simon/TSER/Time_Series_Data/NewsTitleSentiment_TRAIN.ts',
-    'Covid3Month':        '/home/simon/TSER/Time_Series_Data/Covid3Month_TRAIN.ts',
-
+    
     'BenzeneConcentration':       '/home/simon/TSER/Time_Series_Data/BenzeneConcentration_TRAIN.ts',
+    'Covid3Month':        '/home/simon/TSER/Time_Series_Data/Covid3Month_TRAIN.ts',
     'FloodModeling1':             '/home/simon/TSER/Time_Series_Data/FloodModeling1_TRAIN.ts',
     'HouseholdPowerConsumption1': '/home/simon/TSER/Time_Series_Data/HouseholdPowerConsumption1_TRAIN.ts'
 }
