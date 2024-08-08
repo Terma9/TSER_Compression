@@ -13,13 +13,13 @@ from create_prepared_data_tsfresh import *
 
 
 ds_names = [
-'NewsTitleSentiment',   
-'AppliancesEnergy',
-'HouseholdPowerConsumption1',
-'BenzeneConcentration',
-'IEEEPPG',
+#'NewsTitleSentiment',   
+#'AppliancesEnergy',
+#'HouseholdPowerConsumption1',
 'FloodModeling1',
 'Covid3Month',
+'IEEEPPG',
+'BenzeneConcentration',
 'BeijingPM25Quality',
 ]
 
@@ -61,6 +61,8 @@ for ds_name in ds_names:
 
     for tq in ['dct', 'dft', 'dwt']:
         for i in [0.5, 0.75, 0.85, 0.9, 0.95, 0.97, 0.99]:
+            if ds_name == "BenzeneConcentration" and tq == 'dct' and i <= 0.85:
+                continue
 
             
             _ , train_features = load_and_prepare_everything(data_train_path, tq, i)
