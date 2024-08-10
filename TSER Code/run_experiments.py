@@ -180,8 +180,8 @@ def run_agluon_all():
             if not os.path.exists(ds_path):
                 os.makedirs(ds_path)
 
-            #features_path = '/home/simon/TSER/features_dfs/' + ds_name + '/
-            features_path = '/home/sim/Desktop/TS Extrinsic Regression/features_dfs/' + ds_name + '/'
+            features_path = '/home/simon/TSER/features_dfs/' + ds_name + '/'
+            #features_path = '/home/sim/Desktop/TS Extrinsic Regression/features_dfs/' + ds_name + '/'
 
             train_features = pd.read_parquet(features_path + f'NONE_NONE_{ds_name}_features_TRAIN')
             test_features = pd.read_parquet(features_path + f'NONE_NONE_{ds_name}_features_TEST')
