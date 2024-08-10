@@ -30,7 +30,9 @@ import matplotlib.pyplot as plt
 #warnings.filterwarnings("ignore", category=RuntimeWarning)
 
 
-path_server = '/home/simon/TSER/preparedData/FloodModeling1_TEST_dct_0.5_features.csv'
+
+features_path_server = '/home/simon/TSER/features_dfs/'
+features_path_local = '/home/sim/Desktop/TS Extrinsic Regression/features_dfs/' 
 
 
 paths = {
@@ -51,10 +53,6 @@ from agluon import run_agluon
 
 
 ds_name = 'AppliancesEnergy'
-features_path_server = '/home/simon/TSER/features_dfs/' + ds_name + '/'
-features_path_local = '/home/sim/Desktop/TS Extrinsic Regression/features_dfs/' 
-
-
 
 features_path = features_path_server + ds_name + '/'
 
