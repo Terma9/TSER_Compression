@@ -51,7 +51,12 @@ from agluon import run_agluon
 
 
 ds_name = 'AppliancesEnergy'
-features_path = '/home/sim/Desktop/TS Extrinsic Regression/features_dfs/' + ds_name + '/'
+features_path_server = '/home/simon/TSER/features_dfs/' + ds_name + '/'
+features_path_local = '/home/sim/Desktop/TS Extrinsic Regression/features_dfs/' 
+
+
+
+features_path = features_path_server + ds_name + '/'
 
 
 train_features = pd.read_parquet(features_path + f'NONE_NONE_{ds_name}_features_TRAIN')
