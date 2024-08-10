@@ -5,7 +5,6 @@ if socket.gethostname() != "sim-IdeaPad-5-14ALC05":
         os.environ[var] = "40" 
 
 
-from flaml_and_fwiztest_no_outputfile import *
 
 import pandas as pd
 import numpy as np
@@ -25,15 +24,10 @@ import os
 import matplotlib.pyplot as plt
 
 
-from tsfresh import extract_features, select_features, extract_relevant_features
-from tsfresh.feature_extraction import extract_features, EfficientFCParameters
-from tsfresh.utilities.dataframe_functions import impute
-
-
-import warnings
-warnings.simplefilter("ignore")
-warnings.filterwarnings("ignore")
-warnings.filterwarnings("ignore", category=RuntimeWarning)
+#import warnings
+#warnings.simplefilter("ignore")
+#warnings.filterwarnings("ignore")
+#warnings.filterwarnings("ignore", category=RuntimeWarning)
 
 
 path_server = '/home/simon/TSER/preparedData/FloodModeling1_TEST_dct_0.5_features.csv'
@@ -52,7 +46,26 @@ paths = {
 }
 
 
-run_flaml(path_server,'Test2', 'run4', 10)
+from agluon import run_agluon
+
+
+
+ds_name = 'AppliancesEnergy'
+features_path = '/home/sim/Desktop/TS Extrinsic Regression/features_dfs/' + ds_name + '/'
+
+
+train_features = pd.read_parquet(features_path + f'NONE_NONE_{ds_name}_features_TRAIN')
+test_features = pd.read_parquet(features_path + f'NONE_NONE_{ds_name}_features_TEST')
+
+
+run_agluon('Test', 'test_run', 100, train_features, test_features)
+
+
+
+
+
+
+
 
 
 

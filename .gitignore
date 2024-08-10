@@ -4,5 +4,7 @@ data/
 .venvAutogluonServer
 .venvFlamlFwizServer
 PredictionsAllDatasets/
-All-Logs
+All-Logs/
+mlruns/
+features_dfs/
 **/__pycache__/
