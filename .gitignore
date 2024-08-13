@@ -7,4 +7,6 @@ PredictionsAllDatasets/
 All-Logs/
 mlruns/
 features_dfs/
+PredictionsAllDatasets_agluon/
+All-Logs_agluon/
 **/__pycache__/

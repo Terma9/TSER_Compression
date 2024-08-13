@@ -53,7 +53,7 @@ def get_smape(y_true, y_pred):
 
 
 # Modified SMAPE
-def get_msmape(y_true, y_pred, epsilon=1e-4):
+def get_msmape(y_true, y_pred, epsilon=1e-4):   # epsilon = 0.0001
     y_true, y_pred = np.array(y_true), np.array(y_pred)
 
     denominator = np.abs(y_true) + np.abs(y_pred) + epsilon

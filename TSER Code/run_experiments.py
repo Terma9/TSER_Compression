@@ -7,7 +7,7 @@ if socket.gethostname() != "sim-IdeaPad-5-14ALC05":
 
 
 
-###   TO RUN FLAML: UNCOMMENT FLAML_AND_FWIZTEST AND CREATE_PREPARED_DATA
+###   TO RUN FLAML: UNCOMMENT FLAML_AND_FWIZTEST AND Uncomment CREATE_PREPARED_DATA
 
 #from flaml_and_fwiztest_wlogs import run_flaml
 from agluon import run_agluon
