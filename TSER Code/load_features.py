@@ -13,10 +13,11 @@ from create_prepared_data_tsfresh import *
 
 
 ds_names = [
-'NewsTitleSentiment',
+#'NewsTitleSentiment',
+'BeijingPM10Quality',
 'HouseholdPowerConsumption2',
 'FloodModeling2',
-'BeijingPM10Quality'
+
 
 
 #'AppliancesEnergy',

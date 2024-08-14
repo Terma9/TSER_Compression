@@ -16,6 +16,10 @@ dataset_params = {
     'BenzeneConcentration':      {'block_size': 960, 'num_dim': 8, 'len_ts': 240},
     'NewsTitleSentiment':        {'block_size': 1008, 'num_dim': 3, 'len_ts': 144},
     'HouseholdPowerConsumption1':{'block_size': 1440, 'num_dim': 5, 'len_ts': 1440},
+
+    'HouseholdPowerConsumption2':{'block_size': 1440, 'num_dim': 5, 'len_ts': 1440},
+    'FloodModeling2':            {'block_size': 1064, 'num_dim': 1, 'len_ts': 266},
+    'BeijingPM10Quality':        {'block_size': 1008, 'num_dim': 9, 'len_ts': 24},
     
 }
 

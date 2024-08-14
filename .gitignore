@@ -9,4 +9,6 @@ mlruns/
 features_dfs/
 PredictionsAllDatasets_agluon/
 All-Logs_agluon/
+Trying_Stuff
+.vscode
 **/__pycache__/
