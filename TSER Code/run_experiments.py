@@ -7,16 +7,17 @@ if socket.gethostname() != "sim-IdeaPad-5-14ALC05":
 
 
 
-###   TO RUN FLAML: UNCOMMENT FLAML_AND_FWIZTEST AND Uncomment CREATE_PREPARED_DATA
+###   TO RUN FLAML: UNCOMMENT FLAML_AND_FWIZTEST AND Uncomment CREATE_PREPARED_DATA (if needed to load stuff)
 
-#from flaml_and_fwiztest_wlogs import run_flaml
-from agluon import run_agluon
+from flaml_and_fwiztest_wlogs import run_flaml
+#from agluon import run_agluon
 
 
+#from create_prepared_data_tsfresh import *
 
 import argparse
 from utils.personal_utils import *
-#from create_prepared_data_tsfresh import *
+
 
 
 
@@ -99,14 +100,19 @@ def run_flaml_all():
 
 
     ds_names = [
-    'NewsTitleSentiment',   
-    'AppliancesEnergy',
+    #'NewsTitleSentiment',   
+    #'AppliancesEnergy',
     #'HouseholdPowerConsumption1',
     #'BenzeneConcentration',
     #'IEEEPPG',
     #'FloodModeling1',
     #'Covid3Month',
     #'BeijingPM25Quality',
+
+    'BeijingPM10Quality',
+    'HouseholdPowerConsumption2',
+    'FloodModeling2',
+
     ]
 
 
@@ -124,17 +130,18 @@ def run_flaml_all():
         if not os.path.exists(ds_path):
             os.makedirs(ds_path)
 
+        features_path = '/home/simon/TSER/features_dfs/' + ds_name + '/'
 
         data_train_path = path_ts + ds_name + "_TRAIN.ts"
         data_test_path = path_ts + ds_name + "_TEST.ts"
 
 
         # -> Can get data directly by loading it from the parquet file!
-        train_data, train_features = load_and_prepare_everything(data_train_path, None, -1)
-        test_data, test_features = load_and_prepare_everything(data_test_path, None, -1)
+        train_features = pd.read_parquet(features_path + f'NONE_NONE_{ds_name}_features_TRAIN')
+        test_features = pd.read_parquet(features_path + f'NONE_NONE_{ds_name}_features_TEST')
 
 
-
+        print('SimonLog: ' + f'{ds_name}_NONE_NONE')
         y_prediction_none = run_flaml(f'{ds_name}_Runs', f'NONE_{ds_name}_20min_Flaml_f', 20 * 60, train_features, test_features)
         np.save(os.path.join(ds_path, f'NONE_{ds_name}_predictions.npy'), y_prediction_none)
 
@@ -142,9 +149,11 @@ def run_flaml_all():
         for tq in ['dct', 'dft', 'dwt']:
             for i in [0.5, 0.75, 0.85, 0.9, 0.95, 0.97, 0.99]:
 
-                
-                train_data, train_features = load_and_prepare_everything(data_train_path, tq, i)
-                test_data, test_features = load_and_prepare_everything(data_test_path, tq, i)
+
+                train_features = pd.read_parquet(features_path + f'{i}_{tq}_{ds_name}_features_TRAIN')
+                test_features = pd.read_parquet(features_path + f'{i}_{tq}_{ds_name}_features_TEST')
+
+                print('SimonLog: ' + f'{ds_name}_{i}_{tq}')
 
                 y_prediction = run_flaml(f'{ds_name}_Runs', f'{i}_{tq}_{ds_name}_20min_Flaml_f', 20 * 60, train_features, test_features)
                 np.save(os.path.join(ds_path, f'{i}_{tq}_{ds_name}_predictions.npy'), y_prediction)
@@ -203,13 +212,6 @@ def run_agluon_all():
                     test_features = pd.read_parquet(features_path + f'{i}_{tq}_{ds_name}_features_TEST')
 
 
-
-                    if ds_name == 'NewsTitleSentiment':
-                        data_train_path = path_ts + ds_name + "_TRAIN.ts"
-                        data_test_path = path_ts + ds_name + "_TEST.ts"
-
-                        # _ , train_features = load_and_prepare_everything(data_train_path, tq, i)
-                        #_ , test_features = load_and_prepare_everything(data_test_path, tq, i)
 
                     print('SimonLog: ' + f'{ds_name}_{i}_{tq}')
                     y_prediction = run_agluon(f'{ds_name}_Runs', f'{i}_{tq}_{ds_name}_20min_Agluon_f', 20 * 60, train_features, test_features)
