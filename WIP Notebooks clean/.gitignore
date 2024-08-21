@@ -1,7 +1,6 @@
 data/
 .venvAutogluon
 .venvFlamlFwiz
-.venvOther/
 .venvAutogluonServer
 .venvFlamlFwizServer
 PredictionsAllDatasets/

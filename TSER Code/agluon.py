@@ -75,7 +75,8 @@ def run_agluon(experiment_name, run_name, time, train_data, test_data):
 
 
     # Autogluon needs train_data and target in one df, target has to be named target
-    predictor = TabularPredictor(label='target', eval_metric='root_mean_squared_error', path=model_folder_path, log_to_file=True, verbosity=3, log_file_path=logging_file_path).fit(train_data, **automl_settings)
+    # !! to log normally change path to path= model_folder_path
+    predictor = TabularPredictor(label='target', eval_metric='root_mean_squared_error', path='/home/simon/TSER', log_to_file=True, verbosity=3, log_file_path=logging_file_path).fit(train_data, **automl_settings)
 
     #Autogluon Prediction
     predictions = predictor.predict(test_data.drop(columns=["target"]))

@@ -31,7 +31,7 @@ def get_rmse(y_true, y_pred):
     return np.sqrt(np.mean((y_true - y_pred) ** 2))
 
 
-# MAPE, only divding when true value not zero or the value very very small. We just ignore value where we would divide by 0
+# MAPE, only divding when true value not zero or the value very very small. We just ignore value where we would divide by 0.
 def get_mape(y_true, y_pred):
     y_true, y_pred = np.array(y_true), np.array(y_pred)
 
@@ -53,17 +53,18 @@ def get_smape(y_true, y_pred):
 
 
 # Modified SMAPE
-def get_msmape(y_true, y_pred, epsilon=1e-4):   # epsilon = 0.0001
+def get_msmape(y_true, y_pred, epsilon=1e-4):   # epsilon = 0.0001 -> so that we never divide by 0
     y_true, y_pred = np.array(y_true), np.array(y_pred)
 
-    denominator = np.abs(y_true) + np.abs(y_pred) + epsilon
+    denominator =  (np.abs(y_true) + np.abs(y_pred)) * 0.5 + epsilon
     return np.mean(np.abs(y_true - y_pred) / denominator) 
 
 
 
 
 
-
+# -> get real msmape, if change let carlos know
+# -> shouldnt change points on paretofront
 
 
 

@@ -9,8 +9,8 @@ if socket.gethostname() != "sim-IdeaPad-5-14ALC05":
 
 ###   TO RUN FLAML: UNCOMMENT FLAML_AND_FWIZTEST AND Uncomment CREATE_PREPARED_DATA (if needed to load stuff)
 
-from flaml_and_fwiztest_wlogs import run_flaml
-#from agluon import run_agluon
+#from flaml_and_fwiztest_wlogs import run_flaml
+from agluon import run_agluon
 
 
 #from create_prepared_data_tsfresh import *
@@ -119,7 +119,7 @@ def run_flaml_all():
     # Create folder to save the outputs
     current_directory = os.getcwd()
     parent_directory = os.path.dirname(current_directory)
-    folder_path = os.path.join(parent_directory, 'PredictionsAllDatasets_agluon')
+    folder_path = os.path.join(parent_directory, 'PredictionsAllDatasets')
     if not os.path.exists(folder_path):
         os.makedirs(folder_path)
 
@@ -132,8 +132,8 @@ def run_flaml_all():
 
         features_path = '/home/simon/TSER/features_dfs/' + ds_name + '/'
 
-        data_train_path = path_ts + ds_name + "_TRAIN.ts"
-        data_test_path = path_ts + ds_name + "_TEST.ts"
+        #data_train_path = path_ts + ds_name + "_TRAIN.ts"
+        #data_test_path = path_ts + ds_name + "_TEST.ts"
 
 
         # -> Can get data directly by loading it from the parquet file!
@@ -161,16 +161,23 @@ def run_flaml_all():
 
 
 
+
+## ATTENTION: I DEACTIVATED LOG Of MODELS ON AGLUON CODE
 def run_agluon_all():
     ds_names = [
-    #'NewsTitleSentiment',   
-    'AppliancesEnergy',
-    'HouseholdPowerConsumption1',
-    'BenzeneConcentration',
-    'IEEEPPG',
-    'FloodModeling1',
-    'Covid3Month',
-    'BeijingPM25Quality',
+    'NewsTitleSentiment',   
+    #'AppliancesEnergy',
+    #'HouseholdPowerConsumption1',
+    #'BenzeneConcentration',
+    #'IEEEPPG',
+    #'FloodModeling1',
+    #'Covid3Month',
+    #'BeijingPM25Quality',
+
+    'BeijingPM10Quality',
+    'HouseholdPowerConsumption2',
+    'FloodModeling2',
+
     ]
 
 
