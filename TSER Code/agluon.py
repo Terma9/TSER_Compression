@@ -64,7 +64,7 @@ def run_agluon(experiment_name, run_name, time, train_data, test_data):
 
     automl_settings = {
         "time_limit" : time,
-        "presets" : "best_quality", # best quality improves gives best result, but needs most resources!
+        "presets" : "good_quality", # best quality improves gives best result, but needs most resources!
         ##"num_cpus" : 24
     }
 
