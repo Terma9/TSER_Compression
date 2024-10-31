@@ -3,7 +3,7 @@ import numpy as np
 from utils.data_loader import load_from_tsfile_to_dataframe
 from utils.regressor_tools import process_data
 import os
-from compression import *
+from Experiment.compression import *
 
 
 # Load Dataset into Array!
@@ -53,7 +53,7 @@ def get_smape(y_true, y_pred):
 
 
 # Modified SMAPE
-def get_msmape(y_true, y_pred, epsilon=1e-4):   # epsilon = 0.0001 -> so that we never divide by 0
+def get_msmape(y_true, y_pred, epsilon=0.01):   # epsilon = 0.0001 -> so that we never divide by 0
     y_true, y_pred = np.array(y_true), np.array(y_pred)
 
     denominator =  (np.abs(y_true) + np.abs(y_pred)) * 0.5 + epsilon
